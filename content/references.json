@@ -1,0 +1,135 @@
+[
+  {
+    "id": 1,
+    "title": "A Logical Calculus of the Ideas Immanent in Nervous Activity",
+    "publisher": "Bulletin of Mathematical Biophysics",
+    "year": "1943",
+    "url": "https://doi.org/10.1007/BF02478259"
+  },
+  {
+    "id": 2,
+    "title": "Attention Is All You Need",
+    "publisher": "arXiv",
+    "year": "2017",
+    "url": "https://arxiv.org/abs/1706.03762"
+  },
+  {
+    "id": 3,
+    "title": "Language Models are Few-Shot Learners",
+    "publisher": "OpenAI",
+    "year": "2020",
+    "url": "https://arxiv.org/abs/2005.14165"
+  },
+  {
+    "id": 4,
+    "title": "Key concepts: Tokens",
+    "publisher": "OpenAI Developers",
+    "year": "2026",
+    "url": "https://developers.openai.com/api/docs/concepts#tokens"
+  },
+  {
+    "id": 5,
+    "title": "Vector embeddings",
+    "publisher": "OpenAI Developers",
+    "year": "2026",
+    "url": "https://developers.openai.com/api/docs/guides/embeddings"
+  },
+  {
+    "id": 6,
+    "title": "Function calling",
+    "publisher": "OpenAI Developers",
+    "year": "2026",
+    "url": "https://developers.openai.com/api/docs/guides/function-calling"
+  },
+  {
+    "id": 7,
+    "title": "Using GPT-5.6",
+    "publisher": "OpenAI Developers",
+    "year": "2026",
+    "url": "https://developers.openai.com/api/docs/guides/latest-model.md"
+  },
+  {
+    "id": 8,
+    "title": "Effort",
+    "publisher": "Claude Platform Docs",
+    "year": "2026",
+    "url": "https://platform.claude.com/docs/en/build-with-claude/effort"
+  },
+  {
+    "id": 9,
+    "title": "Adaptive thinking",
+    "publisher": "Claude Platform Docs",
+    "year": "2026",
+    "url": "https://platform.claude.com/docs/en/build-with-claude/adaptive-thinking"
+  },
+  {
+    "id": 10,
+    "title": "AI achieves silver-medal standard solving IMO problems",
+    "publisher": "Google DeepMind",
+    "year": "2024",
+    "url": "https://deepmind.google/blog/ai-solves-imo-problems-at-silver-medal-level/"
+  },
+  {
+    "id": 11,
+    "title": "Gemini Deep Think achieves gold-medal standard at IMO",
+    "publisher": "Google DeepMind",
+    "year": "2025",
+    "url": "https://deepmind.google/blog/advanced-version-of-gemini-with-deep-think-officially-achieves-gold-medal-standard-at-the-international-mathematical-olympiad/"
+  },
+  {
+    "id": 12,
+    "title": "Kimi K3: Open Frontier Intelligence",
+    "publisher": "Moonshot AI",
+    "year": "2026",
+    "url": "https://www.kimi.com/ja/blog/kimi-k3"
+  },
+  {
+    "id": 13,
+    "title": "Hugging Face model evaluation security incident",
+    "publisher": "OpenAI",
+    "year": "2026",
+    "url": "https://openai.com/index/hugging-face-model-evaluation-security-incident/"
+  },
+  {
+    "id": 14,
+    "title": "Task-Completion Time Horizons of Frontier AI Models",
+    "publisher": "METR",
+    "year": "2026",
+    "url": "https://metr.org/time-horizons/"
+  },
+  {
+    "id": 15,
+    "title": "Generative AI and Jobs: A Refined Global Index",
+    "publisher": "International Labour Organization",
+    "year": "2025",
+    "url": "https://www.ilo.org/publications/generative-ai-and-jobs-refined-global-index-occupational-exposure"
+  },
+  {
+    "id": 16,
+    "title": "The Future of Jobs Report 2025",
+    "publisher": "World Economic Forum",
+    "year": "2025",
+    "url": "https://www.weforum.org/publications/the-future-of-jobs-report-2025/in-full/2-jobs-outlook/"
+  },
+  {
+    "id": 17,
+    "title": "The 2026 AI Index Report",
+    "publisher": "Stanford HAI",
+    "year": "2026",
+    "url": "https://hai.stanford.edu/ai-index/2026-ai-index-report"
+  },
+  {
+    "id": 18,
+    "title": "Estonia announces AI Leap Programme",
+    "publisher": "Office of the President of Estonia",
+    "year": "2025",
+    "url": "https://president.ee/en/media/press-releases/56984-estonia-announces-groundbreaking-national-initiative-ai-leap-programme-bring-ai-tools-all"
+  },
+  {
+    "id": 19,
+    "title": "LLM и уровень усилий в Claude Code",
+    "publisher": "Habr",
+    "year": "2026",
+    "url": "https://habr.com/ru/articles/1057268/"
+  }
+]

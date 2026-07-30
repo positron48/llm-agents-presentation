@@ -1,0 +1,195 @@
+[
+  {
+    "id": "en",
+    "label": "English",
+    "text": "An agent turns a language model into a system that can act.",
+    "tokens": [
+      {
+        "id": 2223,
+        "text": "An"
+      },
+      {
+        "id": 11793,
+        "text": " agent"
+      },
+      {
+        "id": 18304,
+        "text": " turns"
+      },
+      {
+        "id": 261,
+        "text": " a"
+      },
+      {
+        "id": 6439,
+        "text": " language"
+      },
+      {
+        "id": 2359,
+        "text": " model"
+      },
+      {
+        "id": 1511,
+        "text": " into"
+      },
+      {
+        "id": 261,
+        "text": " a"
+      },
+      {
+        "id": 2420,
+        "text": " system"
+      },
+      {
+        "id": 484,
+        "text": " that"
+      },
+      {
+        "id": 665,
+        "text": " can"
+      },
+      {
+        "id": 1330,
+        "text": " act"
+      },
+      {
+        "id": 13,
+        "text": "."
+      }
+    ]
+  },
+  {
+    "id": "ru",
+    "label": "Русский",
+    "text": "Агент превращает языковую модель в систему, способную действовать.",
+    "tokens": [
+      {
+        "id": 3074,
+        "text": "А"
+      },
+      {
+        "id": 683,
+        "text": "г"
+      },
+      {
+        "id": 4902,
+        "text": "ент"
+      },
+      {
+        "id": 171838,
+        "text": " превращ"
+      },
+      {
+        "id": 10527,
+        "text": "ает"
+      },
+      {
+        "id": 42019,
+        "text": " язы"
+      },
+      {
+        "id": 7312,
+        "text": "ков"
+      },
+      {
+        "id": 4772,
+        "text": "ую"
+      },
+      {
+        "id": 81253,
+        "text": " модель"
+      },
+      {
+        "id": 743,
+        "text": " в"
+      },
+      {
+        "id": 88606,
+        "text": " систему"
+      },
+      {
+        "id": 11,
+        "text": ","
+      },
+      {
+        "id": 23018,
+        "text": " способ"
+      },
+      {
+        "id": 10515,
+        "text": "ную"
+      },
+      {
+        "id": 21957,
+        "text": " действ"
+      },
+      {
+        "id": 11561,
+        "text": "овать"
+      },
+      {
+        "id": 13,
+        "text": "."
+      }
+    ]
+  },
+  {
+    "id": "code",
+    "label": "Код",
+    "text": "const answer = await agent.run({ effort: \"high\" });",
+    "tokens": [
+      {
+        "id": 1671,
+        "text": "const"
+      },
+      {
+        "id": 6052,
+        "text": " answer"
+      },
+      {
+        "id": 314,
+        "text": " ="
+      },
+      {
+        "id": 4021,
+        "text": " await"
+      },
+      {
+        "id": 11793,
+        "text": " agent"
+      },
+      {
+        "id": 14795,
+        "text": ".run"
+      },
+      {
+        "id": 3972,
+        "text": "({"
+      },
+      {
+        "id": 6942,
+        "text": " effort"
+      },
+      {
+        "id": 25,
+        "text": ":"
+      },
+      {
+        "id": 392,
+        "text": " \""
+      },
+      {
+        "id": 21116,
+        "text": "high"
+      },
+      {
+        "id": 1,
+        "text": "\""
+      },
+      {
+        "id": 40188,
+        "text": " });"
+      }
+    ]
+  }
+]
