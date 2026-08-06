@@ -1,0 +1,1039 @@
+{
+  "hero": {
+    "image": "/og.png",
+    "alt": "Искусственный нейрон перерастает в нейросеть, а затем в агента с инструментами"
+  },
+  "biologicalNeuron": {
+    "image": "/neuron-biological.webp",
+    "alt": "Микрофотография нейронов и схема клетки с дендритами, телом, ядром и аксоном",
+    "credit": "OpenStax Anatomy & Physiology, fig. 4.19 · CC BY 4.0",
+    "parts": [
+      {
+        "role": "МНОГО ВХОДОВ",
+        "title": "Дендриты",
+        "note": "принимают сигналы от других клеток"
+      },
+      {
+        "role": "ИНТЕГРАЦИЯ",
+        "title": "Тело клетки",
+        "note": "объединяет входящие воздействия"
+      },
+      {
+        "role": "ОДИН КАНАЛ",
+        "title": "Аксон",
+        "note": "проводит импульс от тела клетки"
+      },
+      {
+        "role": "ПЕРЕДАЧА",
+        "title": "Синапсы",
+        "note": "передают сигнал следующим клеткам"
+      }
+    ]
+  },
+  "neuron": {
+    "controlsAria": "Выбор логической функции",
+    "sumLabel": "Сумматор",
+    "activationLabel": "Ступенчатая функция",
+    "stepNegative": "z < 0  →  0",
+    "stepPositive": "z ≥ 0  →  1",
+    "hiddenLabel": "Скрытый слой",
+    "outputLabel": "Выходной нейрон",
+    "readyCaption": "Меняйте входы и читайте вычисление слева направо: веса → сумма z → H(z) → ответ.",
+    "xorCaption": "XOR: скрытый слой отдельно вычисляет OR и AND, а выходной нейрон оставляет OR без случая AND."
+  },
+  "digits": {
+    "expandButton": "Развернуть сеть 15 → 24 → 10",
+    "modalKicker": "Все 49 нейронов · 600 весов · 634 параметра",
+    "modalTitle": "Что происходит внутри сети",
+    "modalSubtitle": "Меняйте пиксели: яркость нейронов и связей показывает текущую активацию.",
+    "closeButton": "Закрыть",
+    "inputLayer": "INPUT · 15",
+    "hiddenLayer": "HIDDEN · 24 · tanh",
+    "outputLayer": "OUTPUT · 10 · softmax",
+    "parameterLabel": "обучаемых параметра",
+    "parameterFormula": "600 весов + 34 bias",
+    "gptComparison": "GPT‑3 175B ≈ ×276 млн",
+    "positiveLegend": "положительный сигнал",
+    "negativeLegend": "отрицательный сигнал",
+    "inactiveLegend": "неактивная связь"
+  },
+  "embeddings": {
+    "ariaLabel": "Учебное двумерное пространство эмбеддингов со словами мужчина, женщина, король, королева, царь, принц и собака",
+    "kicker": "УСЛОВНАЯ 2D-ПРОЕКЦИЯ",
+    "axes": {
+      "x": "мужское → женское",
+      "y": "обычное → королевское"
+    },
+    "points": [
+      { "id": "man", "label": "мужчина", "x": 225, "y": 245, "tone": "blue" },
+      { "id": "woman", "label": "женщина", "x": 485, "y": 245, "tone": "pink" },
+      { "id": "king", "label": "король", "x": 225, "y": 95, "tone": "blue" },
+      { "id": "queen", "label": "королева", "x": 485, "y": 95, "tone": "pink" },
+      { "id": "tsar", "label": "царь", "x": 155, "y": 62, "tone": "blue" },
+      { "id": "tsarina", "label": "царица", "x": 555, "y": 62, "tone": "pink" },
+      { "id": "prince", "label": "принц", "x": 275, "y": 135, "tone": "blue" },
+      { "id": "princess", "label": "принцесса", "x": 435, "y": 135, "tone": "pink" },
+      { "id": "dog", "label": "собака", "x": 355, "y": 267, "tone": "neutral" },
+      { "id": "cat", "label": "кот", "x": 165, "y": 275, "tone": "neutral" },
+      { "id": "female-cat", "label": "кошка", "x": 545, "y": 275, "tone": "neutral" }
+    ],
+    "analogy": "король − мужчина + женщина = королева",
+    "note": "Положение слов условное. Реальный embedding многомерный, а такие оси получают только после проекции."
+  },
+  "contextInput": {
+    "sentence": "Маша поставила чашку на стол, она …",
+    "tokens": ["Маша", "поставила", "чашку", "на", "стол", ",", "она"],
+    "contentLabel": "содержание токена",
+    "positionLabel": "позиция в контексте",
+    "resultLabel": "вход Transformer",
+    "callout": "В модель входит вся последовательность — не только последний токен",
+    "note": "Токены показаны условно: на практике границы задаёт конкретный токенизатор."
+  },
+  "contextRelations": {
+    "tokens": ["Маша", "поставила", "чашку", "на", "стол", ",", "она"],
+    "shortTokens": ["Маша", "пост.", "чашку", "на", "стол", ",", "она"],
+    "weights": [
+      [1, null, null, null, null, null, null],
+      [0.35, 0.65, null, null, null, null, null],
+      [0.12, 0.34, 0.54, null, null, null, null],
+      [0.08, 0.3, 0.22, 0.4, null, null, null],
+      [0.1, 0.24, 0.28, 0.08, 0.3, null, null],
+      [0.05, 0.08, 0.12, 0.05, 0.4, 0.3, null],
+      [0.08, 0.07, 0.31, 0.04, 0.18, 0.02, 0.3]
+    ],
+    "rowLabel": "для кого собираем контекст",
+    "columnLabel": "откуда берём информацию",
+    "focus": "она",
+    "focusResult": "новое представление «она» уже содержит релевантный контекст",
+    "note": "Учебная attention-операция: яркость показывает вес связи, но не всю причинность решения."
+  },
+  "transformer": {
+    "model": "GPT‑3 175B · опубликованная архитектура",
+    "layer": {
+      "label": "ОДИН TRANSFORMER BLOCK",
+      "mixingTitle": "Смешать контекст",
+      "mixingNote": "каждый токен учитывает важные токены слева",
+      "networkTitle": "Широкая нейросеть",
+      "networkNumber": "49 152",
+      "networkUnit": "внутренних активации на позицию",
+      "inputWidth": "12 288 чисел → 49 152 → 12 288"
+    },
+    "repeat": "× 96 блоков",
+    "fullModel": {
+      "title": "GPT‑3 175B",
+      "layers": "96",
+      "layersLabel": "последовательных блоков",
+      "neurons": "49 152",
+      "neuronsLabel": "активации в широкой части блока",
+      "width": "12 288",
+      "widthLabel": "чисел описывают каждую позицию",
+      "parameters": "175B",
+      "parametersLabel": "обучаемых параметров"
+    },
+    "note": "Схема намеренно упрощена. Attention, heads, residual stream и устройство блока подробно разобраны в бонусной части."
+  },
+  "generation": {
+    "prompt": "Агент",
+    "nextButton": "Сэмплировать токен",
+    "resetButton": "Начать заново",
+    "regenerateButton": "Сгенерировать ответ",
+    "pickedLabel": "случайно выбран",
+    "steps": [
+      {
+        "options": [
+          { "token": "может", "probability": 0.58 },
+          { "token": "способен", "probability": 0.16 },
+          { "token": "умеет", "probability": 0.13 },
+          { "token": "будет", "probability": 0.08 }
+        ]
+      },
+      {
+        "options": [
+          { "token": "читать", "probability": 0.44 },
+          { "token": "изменять", "probability": 0.24 },
+          { "token": "анализировать", "probability": 0.2 },
+          { "token": "обрабатывать", "probability": 0.07 }
+        ]
+      },
+      {
+        "options": [
+          { "token": "файлы", "probability": 0.61 },
+          { "token": "документы", "probability": 0.18 },
+          { "token": "код", "probability": 0.13 },
+          { "token": "экран", "probability": 0.05 }
+        ]
+      },
+      {
+        "options": [
+          { "token": "самостоятельно", "probability": 0.48 },
+          { "token": "быстро", "probability": 0.25 },
+          { "token": "поэтапно", "probability": 0.15 },
+          { "token": "безопасно", "probability": 0.08 }
+        ]
+      },
+      {
+        "options": [
+          { "token": ".", "probability": 0.7 },
+          { "token": "!", "probability": 0.13 },
+          { "token": "…", "probability": 0.1 },
+          { "token": "?", "probability": 0.04 }
+        ]
+      }
+    ]
+  },
+  "context": {
+    "label": "CONTEXT",
+    "caption": "всё, что доступно модели на этом шаге",
+    "sources": [
+      {
+        "kind": "system",
+        "badge": "SYS",
+        "title": "Системный промпт",
+        "preview": "роль · правила · ограничения"
+      },
+      {
+        "kind": "dialogue",
+        "badge": "CHAT",
+        "title": "Диалог",
+        "preview": "запрос · предыдущие ответы"
+      },
+      {
+        "kind": "files",
+        "badge": "FILES",
+        "title": "Файлы проекта",
+        "preview": "app.tsx · config.yaml · logs"
+      },
+      {
+        "kind": "documents",
+        "badge": "DOCS",
+        "title": "Документы",
+        "preview": "spec.pdf · таблицы · статьи"
+      },
+      {
+        "kind": "images",
+        "badge": "IMG",
+        "title": "Изображения",
+        "preview": "скриншоты · фото · схемы"
+      },
+      {
+        "kind": "tools",
+        "badge": "TOOLS",
+        "title": "Результаты tools",
+        "preview": "поиск · терминал · API"
+      }
+    ],
+    "encoding": "tokens + image patches",
+    "modelLabel": "LLM",
+    "modelNote": "transformer обрабатывает весь вход",
+    "outputLabel": "OUTPUT · 1 TOKEN",
+    "outputToken": "может",
+    "outputProbability": "P = 58%",
+    "footnote": "Следующий токен добавится в контекст — и цикл повторится"
+  },
+  "capabilities": {
+    "metric": "50% task-completion time horizon",
+    "axis": "длительность задачи для человека · log scale",
+    "doubling": "удвоение ≈ 129 дней",
+    "actualLabel": "измерения METR",
+    "forecastLabel": "экстраполяция тренда",
+    "forecastButton": "Показать прогноз",
+    "hideForecastButton": "Скрыть прогноз",
+    "warning": "выше 16 часов — ненадёжная зона текущего task suite",
+    "points": [
+      { "year": 2019.12, "model": "GPT‑2", "minutes": 0.053778, "label": "3 сек" },
+      { "year": 2020.41, "model": "davinci‑002", "minutes": 0.144057, "label": "9 сек" },
+      { "year": 2022.2, "model": "GPT‑3.5", "minutes": 0.599247, "label": "36 сек" },
+      { "year": 2023.2, "model": "GPT‑4", "minutes": 3.987428, "label": "4 мин" },
+      { "year": 2024.36, "model": "GPT‑4o", "minutes": 6.991195, "label": "7 мин" },
+      { "year": 2024.47, "model": "Claude 3.5", "minutes": 11.395377, "label": "11 мин" },
+      { "year": 2024.7, "model": "o1-preview", "minutes": 20.326586, "label": "20 мин" },
+      { "year": 2024.93, "model": "o1", "minutes": 38.831588, "label": "39 мин" },
+      { "year": 2025.15, "model": "Claude 3.7", "minutes": 60.388937, "label": "1 ч" },
+      { "year": 2025.29, "model": "o3", "minutes": 119.732634, "label": "2 ч" },
+      { "year": 2025.6, "model": "GPT‑5", "minutes": 203.012577, "label": "3,4 ч" },
+      { "year": 2025.9, "model": "Opus 4.5", "minutes": 292.994594, "label": "4,9 ч" },
+      { "year": 2025.94, "model": "GPT‑5.2", "minutes": 352.249302, "label": "5,9 ч" },
+      { "year": 2026.1, "model": "Opus 4.6", "minutes": 718.80683, "label": "12 ч" }
+    ],
+    "projection": [
+      { "year": 2027.1, "minutes": 5118, "label": "≈ 3,5 дня" },
+      { "year": 2028.1, "minutes": 36460, "label": "≈ 25 дней" }
+    ],
+    "milestones": [
+      { "year": 2024.55, "label": "IMO · серебро", "note": "AlphaProof + AlphaGeometry 2" },
+      { "year": 2025.55, "label": "IMO · золото", "note": "Gemini Deep Think" }
+    ],
+    "footnote": "Прогноз продолжает наблюдаемый экспоненциальный тренд; это не гарантия."
+  },
+  "learning": {
+    "example": "Маша поставила чашку на стол, она …",
+    "predictionBefore": "холодная · 18%",
+    "target": "горячая",
+    "error": "ошибка",
+    "update": "веса немного изменились",
+    "predictionAfter": "горячая · 31%",
+    "repeat": "повторить на огромном числе примеров",
+    "inferenceTitle": "ОБЫЧНЫЙ ЗАПРОС",
+    "inferenceNote": "веса зафиксированы · меняется только временный контекст"
+  },
+  "training": [
+    {
+      "number": "01",
+      "title": "Pretraining",
+      "phase": "Базовая модель",
+      "signal": "тексты · код · изображения",
+      "learns": "Предсказывать следующий токен или visual patch",
+      "result": "Язык, знания и базовые паттерны рассуждения"
+    },
+    {
+      "number": "02",
+      "title": "Instruction tuning",
+      "phase": "Ассистент",
+      "signal": "инструкция → хороший ответ",
+      "learns": "Понимать запрос, соблюдать формат и вести диалог",
+      "result": "От продолжения текста — к ответу пользователю"
+    },
+    {
+      "number": "03",
+      "title": "Preferences + safety",
+      "phase": "Поведение",
+      "signal": "оценки людей · rewards · verifiers",
+      "learns": "Предпочитать полезный ответ, рассуждать и соблюдать границы",
+      "result": "Более управляемое, полезное и безопасное поведение"
+    },
+    {
+      "number": "04",
+      "title": "Tool-use training",
+      "phase": "Агент",
+      "signal": "траектории tool call → result",
+      "learns": "Выбирать tool, заполнять аргументы и продолжать после результата",
+      "result": "Многошаговая работа внутри harness"
+    }
+  ],
+  "tools": {
+    "ariaLabel": "Цикл вызова инструментов",
+    "steps": [
+      {
+        "number": "01",
+        "owner": "MODEL",
+        "title": "Решает, что нужны внешние данные",
+        "description": "В контексте есть задача, но нет актуального ответа.",
+        "tone": "model"
+      },
+      {
+        "number": "02",
+        "owner": "STRUCTURED OUTPUT",
+        "title": "Генерирует tool call",
+        "description": "Это текстовый запрос установленного формата — действие ещё не произошло.",
+        "tone": "call",
+        "code": "{\"name\":\"search\",\"arguments\":{\"q\":\"METR time horizon\"}}"
+      },
+      {
+        "number": "03",
+        "owner": "HARNESS · КОД ПРИЛОЖЕНИЯ",
+        "title": "Проверяет и решает, запускать ли",
+        "description": "Схема аргументов, разрешения, лимиты и подтверждение пользователя.",
+        "tone": "harness",
+        "checks": ["schema", "permissions", "approval"]
+      },
+      {
+        "number": "04",
+        "owner": "EXTERNAL TOOL",
+        "title": "Выполняет реальное действие",
+        "description": "Поиск, Python, terminal, browser, API или MCP-сервер.",
+        "tone": "tool"
+      }
+    ],
+    "resultNumber": "05",
+    "resultLabel": "TOOL RESULT",
+    "resultCode": "{\"status\":\"ok\",\"results\":[...]}",
+    "returnTitle": "Результат добавляется в контекст",
+    "returnNote": "Модель получает новые данные и либо вызывает следующий tool, либо формирует ответ.",
+    "loopLabel": "цикл может повторяться много раз"
+  },
+  "harness": {
+    "columns": ["Только диалог", "Управляемые tools", "Workspace-агент"],
+    "rows": [
+      { "label": "История диалога", "values": [true, true, true] },
+      { "label": "Вручную приложенные файлы", "values": [true, true, true] },
+      { "label": "Поиск и вычисления", "values": [false, true, true] },
+      { "label": "Автодоступ к workspace", "values": [false, false, true] },
+      { "label": "Терминал и тесты", "values": [false, false, true] },
+      { "label": "Длинный цикл", "values": [false, "частично", true] },
+      { "label": "Радиус возможных действий", "values": ["нет", "ограничен", "широкий"] }
+    ]
+  },
+  "agentLoop": {
+    "steps": [
+      { "number": "01", "title": "Понять цель", "note": "критерий готовности" },
+      { "number": "02", "title": "Собрать данные", "note": "контекст и источники" },
+      { "number": "03", "title": "Выполнить действие", "note": "изменить артефакт" },
+      { "number": "04", "title": "Проверить", "note": "факты, тесты, ограничения" },
+      { "number": "05", "title": "Решить: готово?", "note": "завершить или повторить" }
+    ],
+    "domains": [
+      { "title": "Исследования", "route": "собрать → сопоставить → сослаться" },
+      { "title": "Документы", "route": "прочитать → преобразовать → сверить" },
+      { "title": "Данные", "route": "загрузить → посчитать → визуализировать" },
+      { "title": "Приложения", "route": "найти состояние → изменить → подтвердить" }
+    ],
+    "rule": "данные + разрешённые действия + проверяемый результат"
+  },
+  "modelLines": {
+    "axes": ["Способности", "Скорость", "Цена"],
+    "classes": [
+      { "id": "fast", "title": "FAST", "note": "объём и простые преобразования", "capability": 38, "speed": 92, "cost": 22 },
+      { "id": "balanced", "title": "BALANCED", "note": "типовой диалог и агентская работа", "capability": 68, "speed": 64, "cost": 52 },
+      { "id": "frontier", "title": "FRONTIER", "note": "сложность и дорогая ошибка", "capability": 94, "speed": 34, "cost": 88 }
+    ],
+    "question": "Какой минимальный класс стабильно проходит ваш eval?",
+    "next": "После выбора модели настраиваем effort"
+  },
+  "effort": {
+    "xAxis": "стоимость одного решения → токены × цена модели",
+    "yAxis": "качество результата ↑",
+    "tasks": {
+      "simple": {
+        "title": "ПРОСТАЯ ЗАДАЧА · качество одинаковое",
+        "subtitle": "меньшая модель достигает плато дешевле",
+        "models": [
+          {
+            "id": "larger",
+            "label": "большая модель",
+            "color": "#ff7657",
+            "points": [
+              { "x": 0, "y": 0 },
+              { "x": 10, "y": 18 },
+              { "x": 20, "y": 50 },
+              { "x": 28, "y": 66 },
+              { "x": 38, "y": 70 },
+              { "x": 62, "y": 70 },
+              { "x": 78, "y": 70 },
+              { "x": 100, "y": 70 }
+            ],
+            "efforts": [
+              { "id": "medium", "label": "medium", "x": 62, "y": 70 },
+              { "id": "max", "label": "max", "x": 78, "y": 70 }
+            ]
+          },
+          {
+            "id": "smaller",
+            "label": "меньшая модель",
+            "color": "#789dff",
+            "points": [
+              { "x": 0, "y": 0 },
+              { "x": 12, "y": 12 },
+              { "x": 24, "y": 43 },
+              { "x": 34, "y": 63 },
+              { "x": 44, "y": 70 },
+              { "x": 46, "y": 70 },
+              { "x": 58, "y": 70 },
+              { "x": 100, "y": 70 }
+            ],
+            "efforts": [
+              { "id": "medium", "label": "medium", "x": 46, "y": 70 },
+              { "id": "max", "label": "max", "x": 58, "y": 70 }
+            ]
+          }
+        ],
+        "comparison": {
+          "label": "то же качество · ниже стоимость",
+          "fromModel": "smaller",
+          "fromEffort": "medium",
+          "toModel": "larger",
+          "toEffort": "medium"
+        },
+        "insights": [
+          {
+            "title": "Меньшая модель выгоднее",
+            "note": "Если ваш eval показывает одинаковое качество, меньшая модель обычно даёт решение дешевле."
+          },
+          {
+            "title": "Дополнительная способность не нужна",
+            "note": "Большая модель тратит больше токенов на перепроверку, а каждый её токен обычно ещё и дороже."
+          }
+        ]
+      },
+      "complex": {
+        "title": "СЛОЖНАЯ ЗАДАЧА · потолки различаются",
+        "subtitle": "effort двигает по кривой, но не меняет саму кривую",
+        "models": [
+          {
+            "id": "larger",
+            "label": "большая модель",
+            "color": "#ff7657",
+            "points": [
+              { "x": 0, "y": 3 },
+              { "x": 18, "y": 27 },
+              { "x": 43, "y": 64 },
+              { "x": 62, "y": 80 },
+              { "x": 80, "y": 91 },
+              { "x": 100, "y": 95 }
+            ],
+            "efforts": [
+              { "id": "medium", "label": "medium", "x": 43, "y": 64 },
+              { "id": "max", "label": "max", "x": 80, "y": 91 }
+            ]
+          },
+          {
+            "id": "smaller",
+            "label": "меньшая модель",
+            "color": "#789dff",
+            "points": [
+              { "x": 0, "y": 0 },
+              { "x": 18, "y": 12 },
+              { "x": 43, "y": 35 },
+              { "x": 62, "y": 53 },
+              { "x": 80, "y": 64 },
+              { "x": 100, "y": 67 }
+            ],
+            "efforts": [
+              { "id": "medium", "label": "medium", "x": 43, "y": 35 },
+              { "id": "max", "label": "max", "x": 80, "y": 64 }
+            ]
+          }
+        ],
+        "comparison": {
+          "label": "то же качество · ниже стоимость",
+          "fromModel": "larger",
+          "fromEffort": "medium",
+          "toModel": "smaller",
+          "toEffort": "max"
+        },
+        "insights": [
+          {
+            "title": "Одинаковое качество — разная цена",
+            "note": "Большая модель на medium может дать качество меньшей на max — иногда быстрее и дешевле."
+          },
+          {
+            "title": "Effort не добавляет способностей",
+            "note": "Меньшая модель дольше идёт по своей кривой, но всё равно упирается в более низкий потолок."
+          }
+        ]
+      }
+    },
+    "note": "СХЕМА, НЕ BENCHMARK: medium разных моделей не равны; проверяйте кандидатов на собственном eval-наборе."
+  },
+  "chooser": {
+    "riskLabel": "Цена ошибки",
+    "riskLevels": [
+      { "id": "low", "label": "низкая" },
+      { "id": "medium", "label": "средняя" },
+      { "id": "high", "label": "высокая" }
+    ],
+    "contextRule": "Сначала проверьте: контекст · tools · критерий готовности",
+    "columns": ["Тип задачи", "Model", "Effort", "Проверка"],
+    "rows": [
+      {
+        "task": "Механическая",
+        "examples": "форматирование · перенос · простой CRUD",
+        "recommendations": [
+          { "model": "Fast", "effort": "low", "check": "lint / формат" },
+          { "model": "Fast", "effort": "medium", "check": "typecheck / тест" },
+          { "model": "Balanced", "effort": "medium", "check": "тест + review" }
+        ]
+      },
+      {
+        "task": "Анализ и отладка",
+        "examples": "объяснение · bug hunt · несколько файлов",
+        "recommendations": [
+          { "model": "Balanced", "effort": "medium", "check": "выборочно" },
+          { "model": "Balanced", "effort": "high", "check": "тесты + факты" },
+          { "model": "Frontier", "effort": "high", "check": "независимо" }
+        ]
+      },
+      {
+        "task": "Архитектура и неизвестные",
+        "examples": "исследование · миграция · дорогие решения",
+        "recommendations": [
+          { "model": "Frontier", "effort": "medium", "check": "review допущений" },
+          { "model": "Frontier", "effort": "high", "check": "прототип + review" },
+          { "model": "Frontier", "effort": "max", "check": "двойная проверка" }
+        ]
+      }
+    ],
+    "footnote": "Чем дороже ошибка, тем важнее не только model и effort, но и независимая проверка."
+  },
+  "setup": {
+    "roles": [
+      {
+        "id": "phpstorm",
+        "kind": "IDE · РУЧНОЙ КОНТРОЛЬ",
+        "title": "PhpStorm",
+        "note": "Навигация · точечные правки · refactoring · debugger · просмотр diff",
+        "result": "Я вижу и контролирую код"
+      },
+      {
+        "id": "codex",
+        "kind": "AGENT · ДЛИННЫЙ ЦИКЛ",
+        "title": "Codex",
+        "note": "Исследование · план · изменения · terminal · тесты · проверка",
+        "result": "Задача движется от запроса до проверенного результата"
+      }
+    ],
+    "sharedRepo": "один рабочий каталог · один git diff",
+    "workflowLabel": "NEW-TASK WORKFLOW",
+    "workflow": [
+      { "number": "01", "title": "Scope", "note": "repo · цель · ограничения" },
+      { "number": "02", "title": "Relevant context", "note": "правила · доменные docs" },
+      { "number": "03", "title": "Evidence", "note": "код · тесты · логи · аналоги" },
+      { "number": "04", "title": "Plan + approval", "note": "без изменений до аппрува" },
+      { "number": "05", "title": "Implement + verify", "note": "код · тесты · итоговый diff" }
+    ],
+    "knowledgeLabel": "КОНТЕКСТ, КОТОРЫЙ НЕ НУЖНО СОБИРАТЬ ЗАНОВО",
+    "knowledge": [
+      {
+        "id": "domain",
+        "kind": "STABLE",
+        "path": "docs/<domain>/",
+        "title": "Доменные документы",
+        "note": "архитектура · процессы · бизнес-правила · контракты",
+        "lifetime": "переиспользуются между задачами"
+      },
+      {
+        "id": "task",
+        "kind": "TASK-SPECIFIC",
+        "path": "docs/tasks/",
+        "title": "Планы задач",
+        "note": "границы · решение · файлы · тесты · rollout · риски",
+        "lifetime": "фиксируют решения одной задачи"
+      }
+    ],
+    "contextBenefit": "Новая задача читает релевантный срез, а не весь проект",
+    "ecosystem": {
+      "title": "Готовые варианты существуют",
+      "available": "plugins · MCP · IDE rules · hosted memory",
+      "choice": "Мой выбор: Markdown + свой skill + стандартные tools",
+      "reason": "гибко · легковесно · прозрачно · хранится рядом с кодом"
+    }
+  },
+  "trajectory": {
+    "metric": "METR · 50% task-completion time horizon",
+    "method": "длительность задачи для квалифицированного человека",
+    "growth": "≈ ×180",
+    "growthNote": "за 3 года · 4 мин → 12 ч",
+    "actualLabel": "измерения",
+    "forecastLabel": "экстраполяция",
+    "actual": [
+      { "year": 2023.2, "model": "GPT‑4", "minutes": 3.987428, "label": "4 мин" },
+      { "year": 2024.47, "model": "Claude 3.5", "minutes": 11.395377, "label": "11 мин" },
+      { "year": 2024.93, "model": "o1", "minutes": 38.831588, "label": "39 мин" },
+      { "year": 2025.29, "model": "o3", "minutes": 119.732634, "label": "2 ч" },
+      { "year": 2025.6, "model": "GPT‑5", "minutes": 203.012577, "label": "3,4 ч" },
+      { "year": 2025.9, "model": "Opus 4.5", "minutes": 292.994594, "label": "4,9 ч" },
+      { "year": 2026.1, "model": "Opus 4.6", "minutes": 718.80683, "label": "12 ч" }
+    ],
+    "projection": [
+      { "year": 2027.1, "minutes": 5118, "label": "≈ 3,5 дня" },
+      { "year": 2028.1, "minutes": 36460, "label": "≈ 25 дней" }
+    ],
+    "doubling": "тренд с 2023 года: удвоение ≈ 129 дней",
+    "warning": "выше 16 часов текущий task suite METR ненадёжен",
+    "footnote": "Пунктир — механическое продолжение тренда, не обещание будущих возможностей."
+  },
+  "skills": {
+    "shift": {
+      "fromLabel": "АВТОМАТИЗИРУЕТСЯ",
+      "fromTitle": "Исполнение",
+      "fromNote": "поиск · код · черновики · рутинные решения",
+      "toLabel": "РАСТЁТ ЦЕННОСТЬ",
+      "toTitle": "Управление системой",
+      "toNote": "цель · контекст · оценка · ответственность"
+    },
+    "label": "6 НАВЫКОВ, КОТОРЫЕ СТОИТ КАЧАТЬ",
+    "groups": [
+      {
+        "id": "decide",
+        "number": "01",
+        "title": "Выбрать, что делать",
+        "note": "до запуска агента",
+        "skills": [
+          {
+            "title": "Продуктовое мышление",
+            "note": "выбрать проблему, которую вообще стоит решать"
+          },
+          {
+            "title": "Постановка задачи",
+            "note": "задать цель, ограничения и проверяемый критерий готовности"
+          }
+        ]
+      },
+      {
+        "id": "guide",
+        "number": "02",
+        "title": "Направить агента",
+        "note": "во время работы",
+        "skills": [
+          {
+            "title": "Доменная глубина",
+            "note": "увидеть правдоподобную, но неверную логику"
+          },
+          {
+            "title": "Дизайн контекста",
+            "note": "дать факты, документы, инструменты и актуальное состояние"
+          }
+        ]
+      },
+      {
+        "id": "verify",
+        "number": "03",
+        "title": "Проверить и отвечать",
+        "note": "перед принятием результата",
+        "skills": [
+          {
+            "title": "Evals и проверка",
+            "note": "измерять результат, тестировать и ловить регрессии"
+          },
+          {
+            "title": "Безопасность и контроль",
+            "note": "ограничить права, секреты и границы автономности"
+          }
+        ]
+      }
+    ],
+    "footnote": "Это не профессии и не список инструментов — это навыки управления агентной системой."
+  },
+  "workFuture": {
+    "topLabel": "ВЫШЕ КОГНИТИВНАЯ НЕОПРЕДЕЛЁННОСТЬ",
+    "bottomLabel": "ПЕРВОЙ АВТОМАТИЗИРУЕТСЯ РУТИНА",
+    "levels": [
+      {
+        "id": "create",
+        "number": "06",
+        "title": "Создавать",
+        "tasks": "поставить проблему · придумать направление",
+        "mode": "ЧЕЛОВЕК ВЕДЁТ",
+        "width": 72
+      },
+      {
+        "id": "evaluate",
+        "number": "05",
+        "title": "Оценивать",
+        "tasks": "выбрать критерии · принять риск и ответственность",
+        "mode": "ЧЕЛОВЕК ОТВЕЧАЕТ",
+        "width": 78
+      },
+      {
+        "id": "analyze",
+        "number": "04",
+        "title": "Анализировать",
+        "tasks": "сопоставить данные · найти причины и исключения",
+        "mode": "AI + ЭКСПЕРТ",
+        "width": 84
+      },
+      {
+        "id": "apply",
+        "number": "03",
+        "title": "Применять",
+        "tasks": "выполнить известную процедуру · типовой код",
+        "mode": "АГЕНТ ИСПОЛНЯЕТ",
+        "width": 90
+      },
+      {
+        "id": "understand",
+        "number": "02",
+        "title": "Понимать",
+        "tasks": "пересказать · классифицировать · перевести",
+        "mode": "АВТОМАТИЗИРУЕТСЯ",
+        "width": 95
+      },
+      {
+        "id": "remember",
+        "number": "01",
+        "title": "Вспоминать",
+        "tasks": "найти · перенести · заполнить · воспроизвести",
+        "mode": "АВТОМАТИЗИРУЕТСЯ ПЕРВОЙ",
+        "width": 100
+      }
+    ],
+    "resilienceLabel": "ЗАДАЧУ ЗАЩИЩАЕТ НЕ НАЗВАНИЕ ПРОФЕССИИ, А",
+    "resilience": [
+      "новая ситуация",
+      "неясные критерии",
+      "реальный контекст",
+      "цена ошибки",
+      "ответственность"
+    ],
+    "footnote": "Профессия = смесь задач. ИИ сначала меняет состав работы, а не стирает должность целиком."
+  },
+  "modelProduct": {
+    "layers": [
+      {
+        "number": "01",
+        "id": "model",
+        "title": "MODEL",
+        "subtitle": "обученные веса",
+        "items": ["контекст → токены", "предсказание", "reasoning"]
+      },
+      {
+        "number": "02",
+        "id": "product",
+        "title": "PRODUCT",
+        "subtitle": "интерфейс и состояние",
+        "items": ["system prompt", "диалог и файлы", "tools"]
+      },
+      {
+        "number": "03",
+        "id": "agent",
+        "title": "AGENT HARNESS",
+        "subtitle": "длинная работа",
+        "items": ["цикл и workspace", "permissions", "verification"]
+      }
+    ],
+    "note": "Одна модель + разная обвязка = разное поведение"
+  },
+  "modelSnapshot": {
+    "asOf": "СРЕЗ · 02.08.2026",
+    "entries": [
+      { "date": "16.07.26", "model": "Kimi K3", "vendor": "Moonshot", "access": "WEIGHTS" },
+      { "date": "16.07.26", "model": "Grok 4.5", "vendor": "xAI", "access": "API" },
+      { "date": "09.07.26", "model": "GPT‑5.6", "vendor": "OpenAI", "access": "API" },
+      { "date": "19.05.26", "model": "Gemini 3.5", "vendor": "Google", "access": "API" },
+      { "date": "24.04.26", "model": "DeepSeek V4", "vendor": "DeepSeek", "access": "API" },
+      { "date": "05.02.26", "model": "Claude Opus 4.6", "vendor": "Anthropic", "access": "API" },
+      { "date": "02.12.25", "model": "Mistral Large 3", "vendor": "Mistral", "access": "WEIGHTS" },
+      { "date": "05.08.25", "model": "gpt‑oss", "vendor": "OpenAI", "access": "WEIGHTS" },
+      { "date": "29.04.25", "model": "Qwen3", "vendor": "Alibaba", "access": "WEIGHTS" },
+      { "date": "05.04.25", "model": "Llama 4", "vendor": "Meta", "access": "WEIGHTS" }
+    ],
+    "legend": {
+      "API": "закрытый API",
+      "WEIGHTS": "доступные веса"
+    },
+    "note": "НЕ РЕЙТИНГ · ПРОВЕРЯЙТЕ НА СВОИХ ЗАДАЧАХ"
+  },
+  "capabilitiesToday": {
+    "cards": [
+      { "id": "math", "value": "IMO GOLD", "label": "2025", "note": "олимпиадное математическое рассуждение" },
+      { "id": "long", "value": "≈ 12 ЧАСОВ", "label": "METR · 50%", "note": "горизонт проверяемых длинных задач" },
+      { "id": "work", "value": "WORK", "label": "АРТЕФАКТЫ", "note": "код · документы · таблицы · презентации" },
+      { "id": "open", "value": "OPEN WEIGHTS", "label": "ЛОКАЛЬНО", "note": "настройка · приватность · своя инфраструктура" },
+      { "id": "risk", "value": "RISK ↑", "label": "CYBER + ACTION", "note": "вместе со способностями растёт радиус ошибки" }
+    ],
+    "note": "Способности растут не по одной шкале — проверяйте нужный тип работы"
+  },
+  "capabilityArtifacts": {
+    "cases": [
+      {
+        "id": "browser",
+        "owner": "CURSOR · FASTRENDER",
+        "title": "Браузерный движок с нуля",
+        "headline": "≈ 1 НЕДЕЛЯ",
+        "stats": ["> 1M строк", "1 000 файлов", "сотни agents"],
+        "verifier": "planner → workers → judge",
+        "status": "исследовательский артефакт"
+      },
+      {
+        "id": "compiler",
+        "owner": "ANTHROPIC · C-COMPILER",
+        "title": "C-компилятор на Rust",
+        "headline": "16 AGENTS",
+        "stats": ["100K строк", "≈ 2 000 sessions", "$20K API"],
+        "verifier": "Linux 6.9 · GCC suites · Doom",
+        "status": "clean-room · без интернета"
+      },
+      {
+        "id": "bun",
+        "owner": "BUN · ZIG → RUST",
+        "title": "Перенос production runtime",
+        "headline": "11 ДНЕЙ",
+        "stats": ["535K строк Zig", "до 64 Claude", "$165K API"],
+        "verifier": "6 платформ · 2 reviewers",
+        "status": "merged · 19 регрессий исправлены"
+      }
+    ],
+    "formula": "ДЕКОМПОЗИЦИЯ + ПАРАЛЛЕЛЬНАЯ РАБОТА + СИЛЬНЫЙ VERIFIER",
+    "warning": "НЕ ОДИН PROMPT · НЕ БЕСПЛАТНО · НЕ БЕЗ ЧЕЛОВЕКА"
+  },
+  "capabilityResearch": {
+    "study": "RE-BENCH · 7 НОВЫХ ENVIRONMENTS · 71 HUMAN ATTEMPTS",
+    "comparisons": [
+      {
+        "budget": "2 ЧАСА",
+        "winner": "AGENT",
+        "agent": 78,
+        "human": 65,
+        "note": "лучшие агенты в среднем выше экспертов"
+      },
+      {
+        "budget": "32 ЧАСА",
+        "winner": "HUMAN",
+        "agent": 48,
+        "human": 92,
+        "note": "человеческий результат почти ×2"
+      }
+    ],
+    "kernel": {
+      "label": "PREFIX-SUM CUDA KERNEL",
+      "start": "4,74 ms",
+      "reference": "1,60 ms",
+      "human": "0,67 ms",
+      "agent": "0,64 ms"
+    },
+    "speed": "> 10× БОЛЬШЕ РЕАЛИЗАЦИЙ И ЭКСПЕРИМЕНТОВ",
+    "limits": ["медианная попытка часто слаба", "хуже реагирует на новое", "труднее удерживает прогресс"],
+    "note": "ДЛИННЕЕ БЮДЖЕТ ≠ АВТОМАТИЧЕСКИ ЛУЧШЕ ДЛЯ АГЕНТА"
+  },
+  "modalities": {
+    "columns": ["ДАННЫЕ", "ПОНИМАТЬ", "СОЗДАВАТЬ", "КТО РАБОТАЕТ"],
+    "rows": [
+      { "id": "text", "name": "ТЕКСТ", "understand": "●", "generate": "●", "engine": "frontier LLM" },
+      { "id": "image", "name": "ИЗОБРАЖЕНИЕ", "understand": "●", "generate": "●", "engine": "multimodal + image model" },
+      { "id": "audio", "name": "АУДИО", "understand": "●", "generate": "●", "engine": "realtime / speech model" },
+      { "id": "video", "name": "ВИДЕО", "understand": "●", "generate": "●", "engine": "video model" },
+      { "id": "three-d", "name": "3D", "understand": "◐", "generate": "●", "engine": "specialized model" }
+    ],
+    "note": "ОДИН ИНТЕРФЕЙС МОЖЕТ МАРШРУТИЗИРОВАТЬ ЗАПРОС МЕЖДУ НЕСКОЛЬКИМИ МОДЕЛЯМИ"
+  },
+  "chatTools": {
+    "tools": [
+      { "id": "search", "title": "SEARCH", "input": "запрос", "output": "свежие страницы" },
+      { "id": "files", "title": "FILES", "input": "документы", "output": "факты и цитаты" },
+      { "id": "data", "title": "DATA / PYTHON", "input": "таблица + код", "output": "расчёт и график" },
+      { "id": "images", "title": "IMAGES", "input": "описание / референс", "output": "новое изображение" },
+      { "id": "research", "title": "DEEP RESEARCH", "input": "сложный вопрос", "output": "отчёт с источниками" },
+      { "id": "apps", "title": "APPS / MCP", "input": "действие в сервисе", "output": "данные или изменение" }
+    ],
+    "flow": ["MODEL выбирает вызов", "TOOL выполняет работу", "RESULT возвращается в контекст"]
+  },
+  "nonCodeAgent": {
+    "goalLabel": "ЦЕЛЬ",
+    "goal": "Сравнить 5 поставщиков и подготовить рекомендацию",
+    "steps": [
+      { "number": "01", "title": "Ограничить", "note": "критерии · рынок · срок" },
+      { "number": "02", "title": "Найти", "note": "официальные условия" },
+      { "number": "03", "title": "Извлечь", "note": "цифры · ограничения" },
+      { "number": "04", "title": "Сравнить", "note": "единая таблица" },
+      { "number": "05", "title": "Собрать", "note": "вывод · ссылки · пробелы" }
+    ],
+    "checksLabel": "ГОТОВО, ЕСЛИ",
+    "checks": ["ссылки открываются", "числа воспроизводимы", "неизвестное отмечено", "действия подтверждены"]
+  },
+  "agentUseCases": {
+    "lead": "НЕ ПРОФЕССИИ — КОНКРЕТНЫЕ ПРОВЕРЯЕМЫЕ РЕЗУЛЬТАТЫ",
+    "cases": [
+      {
+        "id": "research",
+        "role": "ИССЛЕДОВАНИЕ",
+        "task": "найти и сопоставить",
+        "result": "обзор рынка со ссылками",
+        "tools": "web · документы"
+      },
+      {
+        "id": "documents",
+        "role": "ДОКУМЕНТЫ",
+        "task": "прочитать и сверить",
+        "result": "таблица расхождений договора",
+        "tools": "файлы · OCR · таблица"
+      },
+      {
+        "id": "analytics",
+        "role": "АНАЛИТИКА",
+        "task": "обновить и объяснить",
+        "result": "метрики, графики и аномалии",
+        "tools": "данные · Python"
+      },
+      {
+        "id": "customers",
+        "role": "КЛИЕНТЫ",
+        "task": "собрать контекст",
+        "result": "черновик ответа + CRM",
+        "tools": "почта · CRM · база знаний"
+      },
+      {
+        "id": "content",
+        "role": "КОНТЕНТ",
+        "task": "адаптировать и собрать",
+        "result": "презентация, пост, иллюстрации",
+        "tools": "доки · изображения · web"
+      },
+      {
+        "id": "personal",
+        "role": "ЛИЧНЫЕ ДЕЛА",
+        "task": "спланировать и согласовать",
+        "result": "поездка, встреча, покупка",
+        "tools": "поиск · календарь · сервисы"
+      }
+    ],
+    "formula": ["ДАННЫЕ ДОСТУПНЫ", "ДЕЙСТВИЯ РАЗРЕШЕНЫ", "РЕЗУЛЬТАТ ПРОВЕРЯЕМ"]
+  },
+  "agentAutonomy": {
+    "axis": "РАСТЁТ ВНЕШНИЙ ЭФФЕКТ И ЦЕНА ОШИБКИ →",
+    "zones": [
+      {
+        "id": "delegate",
+        "number": "01",
+        "label": "ДЕЛЕГИРОВАТЬ",
+        "title": "Агент делает сам",
+        "examples": ["поиск и чтение", "классификация", "расчёты", "черновики"],
+        "control": "лог + автоматические проверки"
+      },
+      {
+        "id": "review",
+        "number": "02",
+        "label": "ПРОВЕРИТЬ",
+        "title": "Человек принимает результат",
+        "examples": ["рекомендация", "ответ клиенту", "изменение CRM", "план действий"],
+        "control": "preview + редактирование"
+      },
+      {
+        "id": "approve",
+        "number": "03",
+        "label": "ПОДТВЕРДИТЬ",
+        "title": "Действие только после approval",
+        "examples": ["оплата", "публикация", "удаление", "юридическое решение"],
+        "control": "точная сумма / цель / эффект"
+      }
+    ],
+    "note": "ОГРАНИЧЕНИЯ ДОЛЖНЫ ЖИТЬ В ПРАВАХ И TOOLS, А НЕ ТОЛЬКО В PROMPT"
+  },
+  "agentWorkInbox": {
+    "sourceLabel": "АДАПТАЦИЯ РЕАЛЬНОГО WORKFLOW RIPPLING",
+    "trigger": "КАЖДЫЕ 2 ЧАСА",
+    "inputs": [
+      { "kind": "SLACK", "text": "созвон: запросить SLA до пятницы" },
+      { "kind": "LOOM", "text": "демо нового onboarding flow" },
+      { "kind": "JIRA", "text": "OPS-421 · возможно дубликат" },
+      { "kind": "MENTION", "text": "нужен владелец и срок" }
+    ],
+    "steps": ["извлечь action / owner / deadline", "связать дубли", "проверить существующие задачи", "сохранить ссылку на источник"],
+    "outputs": [
+      { "kind": "DASHBOARD", "title": "Сегодня · 3 действия", "note": "приоритет · владелец · срок · источник", "mode": "AUTO" },
+      { "kind": "JIRA DRAFT", "title": "Запросить SLA у Vendor A", "note": "готово к созданию", "mode": "APPROVE" },
+      { "kind": "CONFLUENCE", "title": "Onboarding · сводка изменений", "note": "черновик со ссылкой на Loom", "mode": "REVIEW" },
+      { "kind": "QUESTION", "title": "Кто владелец OPS-421?", "note": "данных недостаточно", "mode": "HUMAN" }
+    ],
+    "result": "НЕ САММАРИ · АКТУАЛЬНОЕ СОСТОЯНИЕ + ПОДГОТОВЛЕННОЕ СЛЕДУЮЩЕЕ ДЕЙСТВИЕ"
+  },
+  "industryNext": {
+    "axis": "РАСТЁТ ЕДИНИЦА ДЕЛЕГИРОВАНИЯ →",
+    "stages": [
+      { "id": "answer", "era": "ЧАТ", "unit": "ОТВЕТ", "time": "минуты", "system": "model + context", "state": "НАБЛЮДАЕМ" },
+      { "id": "task", "era": "TOOLS", "unit": "ЗАДАЧА", "time": "часы", "system": "loop + verifier", "state": "НАБЛЮДАЕМ" },
+      { "id": "project", "era": "DURABLE / TEAMS", "unit": "ПРОЕКТ", "time": "дни", "system": "memory + recovery + roles", "state": "ЭКСПЕРИМЕНТЫ" },
+      { "id": "process", "era": "ALWAYS-ON", "unit": "ПРОЦЕСС", "time": "постоянно", "system": "events + permissions + owner", "state": "НАПРАВЛЕНИЕ" }
+    ],
+    "bottlenecksLabel": "ГЛАВНЫЕ ОГРАНИЧЕНИЯ СМЕЩАЮТСЯ В СИСТЕМУ",
+    "bottlenecks": ["критерий готовности", "проверка результата", "восстановление после сбоя", "цена и права"],
+    "note": "ЭТО НАПРАВЛЕНИЕ, А НЕ КАЛЕНДАРНЫЙ ПРОГНОЗ"
+  },
+  "effortEvolution": {
+    "old": {
+      "label": "РАНЬШЕ · БЮДЖЕТ",
+      "code": "budget_tokens: 8_000",
+      "title": "Жёсткий верхний лимит",
+      "items": ["счётчик thinking tokens", "останавливает рассуждение", "легко принять за таймер"]
+    },
+    "new": {
+      "label": "СЕЙЧАС · СИГНАЛ",
+      "code": "reasoning.effort: high",
+      "title": "Обученный режим поведения",
+      "items": ["глубже проверять", "иначе использовать tools", "расход зависит от задачи"]
+    },
+    "note": "EFFORT ≠ ОБЕЩАННОЕ ЧИСЛО ТОКЕНОВ"
+  },
+  "final": {
+    "parts": ["MODEL", "CONTEXT", "TOOLS", "LOOP", "PERMISSIONS", "VERIFICATION"],
+    "result": "= AGENT"
+  }
+}

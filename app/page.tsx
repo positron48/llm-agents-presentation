@@ -1,12 +1,5 @@
-import type { Metadata } from "next";
 import TalkDeck from "./talk-deck";
-import { references, slides, talkMeta } from "@/content/generated";
-
-export const metadata: Metadata = {
-  title: "От нейрона к агенту",
-  description:
-    "Интерактивный доклад о LLM, современных моделях, инструментах и AI-агентах.",
-};
+import { bonusSlides, references, slides, talkMeta } from "@/content/generated";
 
 export default async function Home({
   searchParams,
@@ -18,8 +11,9 @@ export default async function Home({
   return (
     <TalkDeck
       slides={slides}
+      bonusSlides={bonusSlides}
       references={references}
-      totalMinutes={talkMeta.totalMinutes}
+      meta={talkMeta}
       initialMode={params.mode === "read" ? "read" : "slides"}
       initialSlideId={params.slide}
     />

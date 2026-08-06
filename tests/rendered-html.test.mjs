@@ -33,6 +33,10 @@ test("server-renders the presentation shell", async () => {
   assert.match(html, /От нейрона к агенту/);
   assert.match(html, /Читать текст/);
   assert.match(html, /Обзор/);
+  assert.match(html, /Скрыть панели/);
+  assert.match(html, /Номер текущего слайда: 01/);
+  assert.match(html, /src="\/og\.png"/);
+  assert.doesNotMatch(html, /_vinext\/image/);
   assert.doesNotMatch(html, /codex-preview|react-loading-skeleton/i);
 });
 
@@ -42,21 +46,60 @@ test("client includes the reading mode, notes and bibliography", async () => {
     "utf8",
   );
 
-  assert.match(source, /Текст доклада/);
+  assert.match(source, /meta\.kicker/);
   assert.match(source, /speaker-copy/);
   assert.match(source, /Библиография/);
   assert.match(source, /initialMode = "slides"/);
+  assert.match(source, /event\.key\.toLowerCase\(\) === "h"/);
+  assert.match(source, /chrome-reveal/);
+  assert.match(source, /slide\.visual !== "hero"/);
 });
 
-test("content is editable Markdown and keeps the 40-minute budget", async () => {
-  const [markdown, generated, references] = await Promise.all([
+test("content is editable Markdown and keeps bonus slides outside the core talk", async () => {
+  const [markdown, bonusMarkdown, generated, references, visuals, tokenSamples] = await Promise.all([
     readFile(new URL("../content/talk.ru.md", import.meta.url), "utf8"),
+    readFile(new URL("../content/bonus-transformer.ru.md", import.meta.url), "utf8"),
     readFile(new URL("../content/generated.ts", import.meta.url), "utf8"),
     readFile(new URL("../content/references.json", import.meta.url), "utf8"),
+    readFile(new URL("../content/visuals.ru.json", import.meta.url), "utf8"),
+    readFile(new URL("../content/token-samples.ru.json", import.meta.url), "utf8"),
   ]);
 
   assert.match(markdown, /<!-- notes -->/);
-  assert.match(generated, /"totalMinutes": 40/);
+  assert.match(bonusMarkdown, /id: transformer-route/);
+  assert.match(bonusMarkdown, /id: generation/);
+  assert.match(markdown, /brand: LLM \/ AGENTS/);
+  assert.match(generated, /"totalMinutes": 63/);
+  assert.match(generated, /"slideCount": 37/);
+  assert.match(generated, /"id": "learning"/);
+  assert.match(generated, /"id": "agent-loop"/);
+  assert.match(generated, /"id": "model-lines"/);
+  assert.match(generated, /"id": "model-product"/);
+  assert.match(generated, /"id": "model-snapshot"/);
+  assert.match(generated, /"id": "capabilities-today"/);
+  assert.match(generated, /"id": "capability-artifacts"/);
+  assert.match(generated, /"id": "capability-research"/);
+  assert.match(generated, /"id": "modalities"/);
+  assert.match(generated, /"id": "chat-tools"/);
+  assert.match(generated, /"id": "agent-use-cases"/);
+  assert.match(generated, /"id": "non-code-agent"/);
+  assert.match(generated, /"id": "agent-work-inbox"/);
+  assert.match(generated, /"id": "agent-autonomy"/);
+  assert.match(generated, /"id": "effort-evolution"/);
+  assert.match(generated, /"id": "work-future"/);
+  assert.match(generated, /"id": "industry-next"/);
+  assert.match(generated, /export const bonusSlides/);
+  assert.match(generated, /"id": "generation"/);
+  assert.match(generated, /"id": "biological-neuron"/);
+  assert.match(generated, /"id": "context-input"/);
+  assert.match(generated, /"id": "context-relations"/);
+  assert.match(generated, /"id": "effort-simple"/);
+  assert.match(generated, /"id": "effort-complex"/);
+  assert.match(generated, /"bonusSlideCount": 38/);
+  assert.match(generated, /"id": "transformer-summary"/);
+  assert.match(generated, /"id": "kv-cache"/);
   assert.match(generated, /"id": "setup"/);
-  assert.equal(JSON.parse(references).length, 19);
+  assert.equal(JSON.parse(references).length, 51);
+  assert.equal(JSON.parse(visuals).training.length, 4);
+  assert.equal(JSON.parse(tokenSamples).length, 3);
 });

@@ -1,0 +1,17 @@
+[
+  {
+    "id": "en",
+    "label": "English",
+    "text": "An agent turns a language model into a system that can act."
+  },
+  {
+    "id": "ru",
+    "label": "Русский",
+    "text": "Агент превращает языковую модель в систему, способную действовать."
+  },
+  {
+    "id": "code",
+    "label": "Код",
+    "text": "const answer = await agent.run({ effort: \"high\" });"
+  }
+]

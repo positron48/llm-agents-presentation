@@ -1,10 +1,7 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
+import { talkMeta } from "@/content/generated";
 import "./globals.css";
-
-const title = "От нейрона к агенту";
-const description =
-  "Интерактивный доклад о том, как работают LLM, инструменты и AI-агенты.";
 
 export async function generateMetadata(): Promise<Metadata> {
   const requestHeaders = await headers();
@@ -17,18 +14,18 @@ export async function generateMetadata(): Promise<Metadata> {
   const image = `${origin}/og.png`;
 
   return {
-    title,
-    description,
+    title: talkMeta.title,
+    description: talkMeta.description,
     openGraph: {
-      title,
-      description,
+      title: talkMeta.title,
+      description: talkMeta.description,
       type: "website",
       images: [{ url: image, width: 1536, height: 1024 }],
     },
     twitter: {
       card: "summary_large_image",
-      title,
-      description,
+      title: talkMeta.title,
+      description: talkMeta.description,
       images: [image],
     },
   };
