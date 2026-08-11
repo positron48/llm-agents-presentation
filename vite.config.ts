@@ -1,5 +1,9 @@
 import vinext from "vinext";
-import { defineConfig } from "vite";
+import { defineConfig, type Plugin, type ViteDevServer } from "vite";
+import { execFile } from "node:child_process";
+import { readFile, writeFile } from "node:fs/promises";
+import path from "node:path";
+import { promisify } from "node:util";
 import hostingConfig from "./.openai/hosting.json";
 import { sites } from "./build/sites-vite-plugin";
 
@@ -10,6 +14,95 @@ const { d1, r2 } = hostingConfig;
 
 // macOS Seatbelt blocks FSEvents, so Codex previews need polling for HMR.
 const isCodexSeatbeltSandbox = process.env.CODEX_SANDBOX === "seatbelt";
+const execFileAsync = promisify(execFile);
+const projectRoot = import.meta.dirname;
+
+type EditableField = "kicker" | "title" | "subtitle" | "body" | "notes";
+
+function updateSlideSource(
+  source: string,
+  slideId: string,
+  field: EditableField,
+  value: string,
+) {
+  const blocks = source.split("\n===\n");
+  const index = blocks.findIndex((block) => block.startsWith(`---\nid: ${slideId}\n`));
+  if (index < 0) throw new Error(`Slide ${slideId} was not found`);
+
+  const block = blocks[index];
+  const match = block.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
+  if (!match) throw new Error(`Slide ${slideId} has invalid front matter`);
+  let [, frontMatter, content] = match;
+
+  if (field === "kicker" || field === "title" || field === "subtitle") {
+    const line = new RegExp(`^${field}:.*$`, "m");
+    if (line.test(frontMatter)) {
+      frontMatter = frontMatter.replace(line, value ? `${field}: ${value}` : "");
+    } else if (value) {
+      frontMatter = `${frontMatter}\n${field}: ${value}`;
+    }
+    frontMatter = frontMatter.replace(/\n{2,}/g, "\n").trim();
+  } else {
+    const [body = "", notes = ""] = content.split("\n<!-- notes -->\n");
+    content = field === "body"
+      ? `${value.trim()}\n\n<!-- notes -->\n\n${notes.trim()}`
+      : `${body.trim()}\n\n<!-- notes -->\n\n${value.trim()}`;
+  }
+
+  blocks[index] = `---\n${frontMatter}\n---\n${content.trim()}\n`;
+  return blocks.join("\n===\n");
+}
+
+function localTalkEditor(): Plugin {
+  return {
+    name: "local-talk-editor",
+    apply: "serve" as const,
+    configureServer(server: ViteDevServer) {
+      server.middlewares.use("/api/local-talk-editor", async (request, response) => {
+        if (request.method !== "POST") {
+          response.statusCode = 405;
+          response.end("Method not allowed");
+          return;
+        }
+        try {
+          let body = "";
+          for await (const chunk of request) body += chunk;
+          const payload = JSON.parse(body) as {
+            slideId?: string;
+            track?: "core" | "bonus";
+            field?: EditableField;
+            value?: string;
+          };
+          if (!payload.slideId || !payload.field || typeof payload.value !== "string") {
+            throw new Error("slideId, field and value are required");
+          }
+          if (payload.value.length > 100_000) throw new Error("Text is too long");
+
+          const filename = payload.track === "bonus"
+            ? "bonus-transformer.ru.md"
+            : "talk.ru.md";
+          const sourcePath = path.join(projectRoot, "content", filename);
+          const source = await readFile(sourcePath, "utf8");
+          await writeFile(
+            sourcePath,
+            updateSlideSource(source, payload.slideId, payload.field, payload.value),
+          );
+          await execFileAsync(process.execPath, ["scripts/build-content.mjs"], {
+            cwd: projectRoot,
+          });
+          response.setHeader("content-type", "application/json");
+          response.end(JSON.stringify({ ok: true }));
+        } catch (error) {
+          response.statusCode = 400;
+          response.setHeader("content-type", "application/json");
+          response.end(JSON.stringify({
+            error: error instanceof Error ? error.message : "Unable to save the slide",
+          }));
+        }
+      });
+    },
+  };
+}
 
 const localBindingConfig = {
   main: "./worker/index.ts",
@@ -48,6 +141,7 @@ export default defineConfig(async () => {
       ? { watch: { useFsEvents: false, usePolling: true } }
       : undefined,
     plugins: [
+      localTalkEditor(),
       vinext(),
       sites(),
       cloudflare({

@@ -782,25 +782,20 @@
     ],
     "note": "Одна модель + разная обвязка = разное поведение"
   },
-  "modelSnapshot": {
-    "asOf": "СРЕЗ · 02.08.2026",
+  "retrospective": {
     "entries": [
-      { "date": "16.07.26", "model": "Kimi K3", "vendor": "Moonshot", "access": "WEIGHTS" },
-      { "date": "16.07.26", "model": "Grok 4.5", "vendor": "xAI", "access": "API" },
-      { "date": "09.07.26", "model": "GPT‑5.6", "vendor": "OpenAI", "access": "API" },
-      { "date": "19.05.26", "model": "Gemini 3.5", "vendor": "Google", "access": "API" },
-      { "date": "24.04.26", "model": "DeepSeek V4", "vendor": "DeepSeek", "access": "API" },
-      { "date": "05.02.26", "model": "Claude Opus 4.6", "vendor": "Anthropic", "access": "API" },
-      { "date": "02.12.25", "model": "Mistral Large 3", "vendor": "Mistral", "access": "WEIGHTS" },
-      { "date": "05.08.25", "model": "gpt‑oss", "vendor": "OpenAI", "access": "WEIGHTS" },
-      { "date": "29.04.25", "model": "Qwen3", "vendor": "Alibaba", "access": "WEIGHTS" },
-      { "date": "05.04.25", "model": "Llama 4", "vendor": "Meta", "access": "WEIGHTS" }
+      { "date": "2021", "unit": "СТРОКА", "title": "Copilot угадывает продолжение", "note": "строки и функции прямо во время набора" },
+      { "date": "2022", "unit": "ОТВЕТ", "title": "ChatGPT становится массовым продуктом", "note": "готовый ответ вместо списка ссылок" },
+      { "date": "2023", "unit": "МИНУТЫ", "title": "GPT‑4 пишет простые скрипты", "note": "≈ 4 минуты проверяемой самостоятельной работы" },
+      { "date": "2024", "unit": "МОДАЛЬНОСТИ", "title": "GPT‑4o видит, слышит и говорит", "note": "текст + изображение + аудио в одной модели" },
+      { "date": "2024", "unit": "REASONING", "title": "o1 тратит время на рассуждение", "note": "сложная задача больше не обязана решаться мгновенно" },
+      { "date": "2024 → 25", "unit": "IMO", "title": "Спецсистема: silver → general model: gold", "note": "от формальных языков к доказательствам на обычном языке" },
+      { "date": "2025", "unit": "ЗАДАЧА", "title": "Agentic IDE и coding agents", "note": "терминал, фоновые среды, параллельные исполнители" },
+      { "date": "2026", "unit": "ПРОЕКТ", "title": "Агенты работают часами и днями", "note": "≈ 12 часов по METR; команды собирают целые системы" }
     ],
-    "legend": {
-      "API": "закрытый API",
-      "WEIGHTS": "доступные веса"
-    },
-    "note": "НЕ РЕЙТИНГ · ПРОВЕРЯЙТЕ НА СВОИХ ЗАДАЧАХ"
+    "start": "1 строка",
+    "finish": "целый проект",
+    "duration": "≈ 5 лет"
   },
   "capabilitiesToday": {
     "cards": [
@@ -818,8 +813,12 @@
         "id": "browser",
         "owner": "CURSOR · FASTRENDER",
         "title": "Браузерный движок с нуля",
-        "headline": "≈ 1 НЕДЕЛЯ",
-        "stats": ["> 1M строк", "1 000 файлов", "сотни agents"],
+        "metrics": [
+          { "label": "ВРЕМЯ", "value": "≈ 1 неделя" },
+          { "label": "КОД", "value": "> 1M строк" },
+          { "label": "АГЕНТЫ", "value": "сотни" },
+          { "label": "СТОИМОСТЬ", "value": "не раскрыта" }
+        ],
         "verifier": "planner → workers → judge",
         "status": "исследовательский артефакт"
       },
@@ -827,17 +826,25 @@
         "id": "compiler",
         "owner": "ANTHROPIC · C-COMPILER",
         "title": "C-компилятор на Rust",
-        "headline": "16 AGENTS",
-        "stats": ["100K строк", "≈ 2 000 sessions", "$20K API"],
+        "metrics": [
+          { "label": "ВРЕМЯ", "value": "2 недели" },
+          { "label": "КОД", "value": "100K строк" },
+          { "label": "АГЕНТЫ", "value": "16" },
+          { "label": "СТОИМОСТЬ", "value": "≈ $20K" }
+        ],
         "verifier": "Linux 6.9 · GCC suites · Doom",
-        "status": "clean-room · без интернета"
+        "status": "≈ 2 000 sessions · без интернета"
       },
       {
         "id": "bun",
         "owner": "BUN · ZIG → RUST",
         "title": "Перенос production runtime",
-        "headline": "11 ДНЕЙ",
-        "stats": ["535K строк Zig", "до 64 Claude", "$165K API"],
+        "metrics": [
+          { "label": "ВРЕМЯ", "value": "11 дней" },
+          { "label": "КОД", "value": "535K строк" },
+          { "label": "АГЕНТЫ", "value": "до 64" },
+          { "label": "СТОИМОСТЬ", "value": "≈ $165K" }
+        ],
         "verifier": "6 платформ · 2 reviewers",
         "status": "merged · 19 регрессий исправлены"
       }

@@ -47,14 +47,69 @@ type TalkDeckProps = {
   initialSlideId?: string;
 };
 
+type EditableField = "kicker" | "title" | "subtitle" | "body" | "notes";
+
+function htmlToMarkdown(element: HTMLElement) {
+  const convert = (node: Node): string => {
+    if (node.nodeType === Node.TEXT_NODE) return node.textContent ?? "";
+    if (!(node instanceof HTMLElement)) return "";
+    const content = Array.from(node.childNodes).map(convert).join("");
+    switch (node.tagName) {
+      case "STRONG":
+      case "B": return `**${content}**`;
+      case "CODE": return `\`${content}\``;
+      case "BR": return "\n";
+      case "P": return `${content}\n\n`;
+      case "UL": return Array.from(node.children)
+        .map((item) => `- ${Array.from(item.childNodes).map(convert).join("")}`)
+        .join("\n") + "\n\n";
+      case "OL": return Array.from(node.children)
+        .map((item, index) => `${index + 1}. ${Array.from(item.childNodes).map(convert).join("")}`)
+        .join("\n") + "\n\n";
+      default: return content;
+    }
+  };
+  return Array.from(element.childNodes).map(convert).join("").trim();
+}
+
+function EditableText({
+  value,
+  as: Tag,
+  className,
+  editing,
+  onSave,
+}: {
+  value: string;
+  as: "div" | "h1" | "h2" | "p";
+  className?: string;
+  editing: boolean;
+  onSave: (value: string) => void;
+}) {
+  return (
+    <Tag
+      className={className}
+      contentEditable={editing}
+      suppressContentEditableWarning
+      spellCheck={editing}
+      onBlur={(event) => onSave(event.currentTarget.innerText.trim())}
+    >
+      {value}
+    </Tag>
+  );
+}
+
 function HtmlCopy({
   markdown,
   references,
   className = "",
+  editing = false,
+  onSave,
 }: {
   markdown: string;
   references: readonly Reference[];
   className?: string;
+  editing?: boolean;
+  onSave?: (markdown: string) => void;
 }) {
   const html = useMemo(
     () => renderMarkdown(markdown, references),
@@ -64,6 +119,10 @@ function HtmlCopy({
     <div
       className={`markdown-copy ${className}`}
       dangerouslySetInnerHTML={{ __html: html }}
+      contentEditable={editing}
+      suppressContentEditableWarning
+      spellCheck={editing}
+      onBlur={(event) => onSave?.(htmlToMarkdown(event.currentTarget))}
     />
   );
 }
@@ -2621,26 +2680,28 @@ function ModelProductVisual() {
   );
 }
 
-function ModelSnapshotVisual() {
+function RetrospectiveVisual() {
   return (
-    <div className="model-snapshot-board">
-      <header>
-        <strong>{visuals.modelSnapshot.asOf}</strong>
-        <div>
-          <span className="is-api">API</span> {visuals.modelSnapshot.legend.API}
-          <span className="is-weights">WEIGHTS</span> {visuals.modelSnapshot.legend.WEIGHTS}
-        </div>
-      </header>
-      <div className="model-snapshot-grid">
-        {visuals.modelSnapshot.entries.map((entry) => (
-          <article key={`${entry.model}-${entry.date}`}>
+    <div className="retrospective-board">
+      <div className="retrospective-timeline">
+        {visuals.retrospective.entries.map((entry, index) => (
+          <article key={`${entry.date}-${entry.unit}`}>
             <time>{entry.date}</time>
-            <div><strong>{entry.model}</strong><small>{entry.vendor}</small></div>
-            <b className={entry.access === "API" ? "is-api" : "is-weights"}>{entry.access}</b>
+            <span className="retrospective-dot" aria-hidden="true" />
+            <div>
+              <b>{entry.unit}</b>
+              <strong>{entry.title}</strong>
+              <small>{entry.note}</small>
+            </div>
+            <i aria-hidden="true">{String(index + 1).padStart(2, "0")}</i>
           </article>
         ))}
       </div>
-      <footer>{visuals.modelSnapshot.note}</footer>
+      <footer>
+        <strong>{visuals.retrospective.start}</strong>
+        <span>→ {visuals.retrospective.duration} →</span>
+        <strong>{visuals.retrospective.finish}</strong>
+      </footer>
     </div>
   );
 }
@@ -2669,9 +2730,12 @@ function CapabilityArtifactsVisual() {
         {visuals.capabilityArtifacts.cases.map((item) => (
           <article className={`capability-artifact-${item.id}`} key={item.id}>
             <header>{item.owner}</header>
-            <strong>{item.headline}</strong>
             <h3>{item.title}</h3>
-            <div>{item.stats.map((stat) => <span key={stat}>{stat}</span>)}</div>
+            <div className="capability-artifact-metrics">
+              {item.metrics.map((metric) => (
+                <div key={metric.label}><small>{metric.label}</small><strong>{metric.value}</strong></div>
+              ))}
+            </div>
             <section><small>КАК ПРОВЕРЯЛИ</small><b>{item.verifier}</b></section>
             <footer>{item.status}</footer>
           </article>
@@ -2927,7 +2991,7 @@ function Visual({ name }: { name: string }) {
     case "generation": return <GenerationLab />;
     case "context": return <ContextVisual />;
     case "model-product": return <ModelProductVisual />;
-    case "model-snapshot": return <ModelSnapshotVisual />;
+    case "retrospective": return <RetrospectiveVisual />;
     case "capabilities-today": return <CapabilitiesTodayVisual />;
     case "capability-artifacts": return <CapabilityArtifactsVisual />;
     case "capability-research": return <CapabilityResearchVisual />;
@@ -2994,6 +3058,11 @@ export default function TalkDeck({
   initialSlideId,
 }: TalkDeckProps) {
   const [mode, setMode] = useState<"slides" | "read">(initialMode);
+  // This is deliberately a local drafting aid. Vite builds production bundles
+  // with NODE_ENV=production, so a deployed talk never exposes an editable DOM.
+  const canEdit = process.env.NODE_ENV !== "production";
+  const [isEditing, setIsEditing] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
   const allSlides = useMemo(
     () => [...slides, ...bonusSlides],
     [slides, bonusSlides],
@@ -3039,7 +3108,10 @@ export default function TalkDeck({
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       const target = event.target as HTMLElement | null;
-      if (target?.matches("input, select, textarea, button")) return;
+      if (
+        target?.matches("input, select, textarea, button") ||
+        target?.closest('[contenteditable="true"]')
+      ) return;
       if (event.key === "ArrowRight" || event.key === "PageDown" || event.key === " ") {
         event.preventDefault();
         goTo(currentIndex + 1);
@@ -3070,19 +3142,54 @@ export default function TalkDeck({
     updateUrl(nextMode, currentSlideId);
   };
 
+  const saveSlideField = useCallback(async (
+    slide: Slide,
+    field: EditableField,
+    value: string,
+  ) => {
+    if (!canEdit) return;
+    setSaveError(null);
+    const response = await fetch("/api/local-talk-editor", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+        slideId: slide.id,
+        track: slide.track === "bonus" ? "bonus" : "core",
+        field,
+        value,
+      }),
+    });
+    if (!response.ok) {
+      const payload = await response.json().catch(() => ({})) as { error?: string };
+      setSaveError(payload.error ?? "Не удалось сохранить правку");
+    }
+  }, [canEdit]);
+
   if (mode === "read") {
     return (
       <main className="reading-mode">
         <header className="reading-header">
           <a className="brand" href="?slide=cover">{meta.brand}</a>
+          {canEdit && (
+            <button
+              type="button"
+              className={isEditing ? "is-active" : ""}
+              onClick={() => setIsEditing((current) => !current)}
+              aria-pressed={isEditing}
+              title="Локальная правка не сохраняется и сбрасывается после перезагрузки"
+            >
+              {isEditing ? "Закончить правку" : "Редактировать текст"}
+            </button>
+          )}
           <button type="button" onClick={toggleMode}>Режим презентации</button>
         </header>
-        <section className="reading-hero">
-          <span>{meta.kicker} · {meta.totalMinutes} минут · {slides.length} слайдов</span>
-          <h1>{meta.title}</h1>
-          <p>{meta.description}</p>
-        </section>
-        <nav className="reading-toc" aria-label="Содержание">
+        <div className={`editing-surface ${isEditing ? "is-editing" : ""}`}>
+          <section className="reading-hero">
+            <span>{meta.kicker} · {meta.totalMinutes} минут · {slides.length} слайдов</span>
+            <h1>{meta.title}</h1>
+            <p>{meta.description}</p>
+          </section>
+          <nav className="reading-toc" aria-label="Содержание">
           {slides.map((slide, index) => (
             <a href={`#${slide.id}`} key={slide.id}>
               <span>{String(index + 1).padStart(2, "0")}</span>{slide.title}
@@ -3098,18 +3205,18 @@ export default function TalkDeck({
               ))}
             </div>
           )}
-        </nav>
-        <div className="reading-content">
+          </nav>
+          <div className="reading-content">
           {slides.map((slide, index) => (
             <article className="reading-slide" id={slide.id} key={slide.id}>
               <div className="reading-slide-heading">
                 <span>{String(index + 1).padStart(2, "0")} · {slide.section}</span>
-                <h2>{slide.title}</h2>
-                {slide.subtitle && <p>{slide.subtitle}</p>}
+                <EditableText value={slide.title} as="h2" editing={isEditing} onSave={(value) => void saveSlideField(slide, "title", value)} />
+                {slide.subtitle && <EditableText value={slide.subtitle} as="p" editing={isEditing} onSave={(value) => void saveSlideField(slide, "subtitle", value)} />}
               </div>
               <div className="reading-visual"><Visual name={slide.visual} /></div>
-              <HtmlCopy markdown={slide.body} references={references} />
-              <HtmlCopy markdown={slide.notes} references={references} className="speaker-copy" />
+              <HtmlCopy markdown={slide.body} references={references} editing={isEditing} onSave={(value) => void saveSlideField(slide, "body", value)} />
+              <HtmlCopy markdown={slide.notes} references={references} className="speaker-copy" editing={isEditing} onSave={(value) => void saveSlideField(slide, "notes", value)} />
               <SourceList slide={slide} references={references} />
             </article>
           ))}
@@ -3124,19 +3231,19 @@ export default function TalkDeck({
                 <article className="reading-slide" id={slide.id} key={slide.id}>
                   <div className="reading-slide-heading">
                     <span>B{String(index + 1).padStart(2, "0")} · {slide.section}</span>
-                    <h2>{slide.title}</h2>
-                    {slide.subtitle && <p>{slide.subtitle}</p>}
+                    <EditableText value={slide.title} as="h2" editing={isEditing} onSave={(value) => void saveSlideField(slide, "title", value)} />
+                    {slide.subtitle && <EditableText value={slide.subtitle} as="p" editing={isEditing} onSave={(value) => void saveSlideField(slide, "subtitle", value)} />}
                   </div>
                   <div className="reading-visual"><Visual name={slide.visual} /></div>
-                  <HtmlCopy markdown={slide.body} references={references} />
-                  <HtmlCopy markdown={slide.notes} references={references} className="speaker-copy" />
+                  <HtmlCopy markdown={slide.body} references={references} editing={isEditing} onSave={(value) => void saveSlideField(slide, "body", value)} />
+                  <HtmlCopy markdown={slide.notes} references={references} className="speaker-copy" editing={isEditing} onSave={(value) => void saveSlideField(slide, "notes", value)} />
                   <SourceList slide={slide} references={references} />
                 </article>
               ))}
             </section>
           )}
-        </div>
-        <section className="bibliography" id="sources">
+          </div>
+          <section className="bibliography" id="sources">
           <span>Библиография</span>
           <h2>Источники</h2>
           <ol>
@@ -3149,7 +3256,9 @@ export default function TalkDeck({
               </li>
             ))}
           </ol>
-        </section>
+          </section>
+        </div>
+        {saveError && <p className="editor-error" role="alert">{saveError}</p>}
       </main>
     );
   }
@@ -3170,6 +3279,17 @@ export default function TalkDeck({
           <div className="deck-meta">
             <span>{isBonus ? `Бонус · ${slide.section}` : slide.section}</span>
             <button type="button" onClick={() => setOverview((current) => !current)}>Обзор</button>
+            {canEdit && (
+              <button
+                type="button"
+                className={isEditing ? "is-active" : ""}
+                onClick={() => setIsEditing((current) => !current)}
+                aria-pressed={isEditing}
+                title="Локальная правка не сохраняется и сбрасывается после перезагрузки"
+              >
+                {isEditing ? "Закончить правку" : "Редактировать текст"}
+              </button>
+            )}
             <button type="button" onClick={toggleMode}>Читать текст</button>
             <button type="button" onClick={() => setChromeVisible(false)}>Скрыть панели</button>
           </div>
@@ -3184,13 +3304,16 @@ export default function TalkDeck({
           Показать панели <kbd>H</kbd>
         </button>
       )}
-      <article className={`slide slide-${slide.visual}`} key={slide.id}>
+      <article
+        className={`slide slide-${slide.visual} ${isEditing ? "is-editing" : ""}`}
+        key={slide.id}
+      >
         {slide.visual !== "hero" && (
           <div className="slide-copy">
-            <div className="slide-kicker">{slide.kicker}</div>
-            <h1>{slide.title}</h1>
-            {slide.subtitle && <p className="slide-subtitle">{slide.subtitle}</p>}
-            <HtmlCopy markdown={slide.body} references={references} />
+            <EditableText value={slide.kicker} as="div" className="slide-kicker" editing={isEditing} onSave={(value) => void saveSlideField(slide, "kicker", value)} />
+            <EditableText value={slide.title} as="h1" editing={isEditing} onSave={(value) => void saveSlideField(slide, "title", value)} />
+            {slide.subtitle && <EditableText value={slide.subtitle} as="p" className="slide-subtitle" editing={isEditing} onSave={(value) => void saveSlideField(slide, "subtitle", value)} />}
+            <HtmlCopy markdown={slide.body} references={references} editing={isEditing} onSave={(value) => void saveSlideField(slide, "body", value)} />
             <SourceList slide={slide} references={references} />
           </div>
         )}
@@ -3274,6 +3397,7 @@ export default function TalkDeck({
           </div>
         </div>
       )}
+      {saveError && <p className="editor-error" role="alert">{saveError}</p>}
     </main>
   );
 }
