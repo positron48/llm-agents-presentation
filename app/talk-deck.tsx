@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  Fragment,
   useCallback,
   useEffect,
   useMemo,
@@ -20,7 +21,7 @@ type Slide = {
   id: string;
   section: string;
   kicker: string;
-  title: string;
+  title?: string;
   subtitle?: string;
   visual: string;
   minutes: number;
@@ -1363,7 +1364,21 @@ function TransformerDeepDiveVisual({ scene }: { scene: DeepScene }) {
   }
 
   if (scene === "mlp-token") {
-    return <div className="deep-scene deep-mlp-token"><div className="mlp-token-column">{deepDive.sentence.slice(0, 6).map(({ token }) => <span key={token}>{token}</span>)}</div><div className="mlp-shared"><span>ОДНИ ВЕСА ДЛЯ ВСЕХ ПОЗИЦИЙ</span><strong>MLP</strong><small>position-wise feed-forward</small></div><div className="mlp-token-column is-output">{deepDive.sentence.slice(0, 6).map(({ token }) => <span key={token}>{token}<i>′</i></span>)}</div></div>;
+    const positions = deepDive.sentence.slice(0, 5);
+    return (
+      <div className="deep-scene deep-mlp-token">
+        <div className="mlp-token-column">
+          <header><strong>ВХОД x</strong><span>состояние позиции после attention</span></header>
+          {positions.map(({ token }, index) => <article key={token}><b>«{token}»</b><span>{index % 2 === 0 ? "▮ ▯ ▮ ▮" : "▯ ▮ ▮ ▯"}</span></article>)}
+        </div>
+        <div className="mlp-shared"><span>ОДНА СЕТЬ ДЛЯ КАЖДОЙ СТРОКИ</span><strong>MLP(x)</strong><small>вычисляет поправку к каждой позиции</small></div>
+        <div className="mlp-token-column is-output">
+          <header><strong>ПОПРАВКА ΔMLP</strong><span>что изменить в состоянии</span></header>
+          {positions.map(({ token }, index) => <article key={token}><b>Δ «{token}»</b><span>{index % 2 === 0 ? "+ − + −" : "− + + −"}</span></article>)}
+        </div>
+        <footer><strong>x + ΔMLP → новое состояние</strong><span>сложение выполняет следующий residual-шаг</span></footer>
+      </div>
+    );
   }
 
   if (scene === "mlp-inside") {
@@ -1406,7 +1421,20 @@ function TransformerDeepDiveVisual({ scene }: { scene: DeepScene }) {
   }
 
   if (scene === "context-cost") {
-    return <div className="deep-scene deep-context-cost"><header><span>CONTEXT</span><strong>FULL ATTENTION / PREFILL</strong><strong>KV CACHE</strong></header>{deepDive.contextCosts.map((item) => <article key={item.tokens}><span>{item.tokens}</span><div><i style={{ width: `${8 + (Math.log2(item.attention) / 12) * 88}%` }} /><small>×{item.attention} · ~N²</small></div><div><i style={{ width: `${8 + (Math.log2(item.cache) / 6) * 88}%` }} /><small>×{item.cache} · ~N</small></div></article>)}<footer>логарифмическая длина полос · cached decode нового токена сравнивает один Query с N сохранённых Keys</footer></div>;
+    const sharedLogScale = (multiplier: number) => `${8 + (Math.log2(multiplier) / 12) * 88}%`;
+    return (
+      <div className="deep-scene deep-context-cost">
+        <header><span>КОНТЕКСТ</span><strong>ВЫЧИСЛЕНИЯ PREFILL · ~N²</strong><strong>ПАМЯТЬ KV CACHE · ~N</strong></header>
+        {deepDive.contextCosts.map((item) => (
+          <article key={item.tokens}>
+            <span>{item.tokens}</span>
+            <div><i style={{ width: sharedLogScale(item.attention) }} /><small>×{item.attention}</small></div>
+            <div><i style={{ width: sharedLogScale(item.cache) }} /><small>×{item.cache}</small></div>
+          </article>
+        ))}
+        <footer>множители относительно контекста 1K · единая логарифмическая шкала для обеих колонок</footer>
+      </div>
+    );
   }
 
   if (scene === "training") {
@@ -1989,13 +2017,14 @@ function HarnessVisual() {
               <th>{label}</th>
               {values.map((value, index) => (
                 <td key={index} className={value === true ? "yes" : value === false ? "no" : ""}>
-                  {value === true ? "●" : value === false ? "—" : value}
+                  {value === true ? "+" : value === false ? "−" : value}
                 </td>
               ))}
             </tr>
           ))}
         </tbody>
       </table>
+      <footer className="harness-table-note">{visuals.harness.note}</footer>
     </div>
   );
 }
@@ -2146,8 +2175,24 @@ function EffortModelChart({
         </g>
       ))}
 
+      <text
+        className="effort-axis-label effort-axis-label-y"
+        x={18}
+        y={plot.top + plotHeight / 2}
+        transform={`rotate(-90 18 ${plot.top + plotHeight / 2})`}
+      >
+        {visuals.effort.yAxis}
+      </text>
+      <text
+        className="effort-axis-label effort-axis-label-x"
+        x={plot.left + plotWidth / 2}
+        y={height - 16}
+      >
+        {visuals.effort.xAxis}
+      </text>
+
       {comparisonFrom && comparisonTo ? (
-        <g>
+        <g className="effort-comparison-callout">
           <line
             className="effort-comparison-line"
             x1={xAt(comparisonFrom.x) + 10}
@@ -2164,22 +2209,6 @@ function EffortModelChart({
           </text>
         </g>
       ) : null}
-
-      <text
-        className="effort-axis-label effort-axis-label-y"
-        x={18}
-        y={plot.top + plotHeight / 2}
-        transform={`rotate(-90 18 ${plot.top + plotHeight / 2})`}
-      >
-        {visuals.effort.yAxis}
-      </text>
-      <text
-        className="effort-axis-label effort-axis-label-x"
-        x={plot.left + plotWidth / 2}
-        y={height - 16}
-      >
-        {visuals.effort.xAxis}
-      </text>
     </svg>
   );
 }
@@ -2251,7 +2280,6 @@ function EffortVisual({ taskId }: { taskId: keyof typeof visuals.effort.tasks })
           </article>
         ))}
       </div>
-      <small className="effort-note">{visuals.effort.note}</small>
     </div>
   );
 }
@@ -2314,66 +2342,64 @@ function ChooserLab() {
   );
 }
 
-function SetupVisual() {
+function SetupFlowVisual() {
   return (
-    <div className="setup-workflow">
-      <div className="setup-roles">
-        {visuals.setup.roles.map((role) => (
-          <article className={`setup-role setup-role-${role.id}`} key={role.id}>
-            <span>{role.kind}</span>
-            <strong>{role.title}</strong>
-            <p>{role.note}</p>
-            <small>{role.result}</small>
+    <div className="setup-flow-board">
+      <div className="setup-flow-grid">
+        {visuals.setup.flow.map((step, index) => (
+          <div className={`setup-flow-step setup-flow-step-${step.number}`} key={step.number}>
+            <article>
+              <header><span>{step.number}</span><small>{step.actor}</small></header>
+              <strong>{step.title}</strong>
+              <p>{step.note}</p>
+            </article>
+            {index < visuals.setup.flow.length - 1 && <b aria-hidden="true">→</b>}
+          </div>
+        ))}
+      </div>
+      <div className="setup-flow-retry"><span>↶</span><strong>{visuals.setup.retry}</strong></div>
+    </div>
+  );
+}
+
+function SetupDocsVisual() {
+  return (
+    <div className="setup-docs-board">
+      <div className="setup-file-tree">
+        {visuals.setup.tree.map((item, index) => (
+          <div className={`setup-tree-row setup-tree-${item.kind}`} key={`${item.name}-${index}`} style={{ paddingLeft: `${16 + item.depth * 28}px` }}>
+            <span aria-hidden="true">{item.kind === "folder" ? "▾" : "·"}</span>
+            <code>{item.name}</code>
+            {item.badge && <b>{item.badge}</b>}
+            {item.note && <small>{item.note}</small>}
+          </div>
+        ))}
+      </div>
+      <aside className="setup-docs-legend">
+        {visuals.setup.docsLegend.map((item) => (
+          <article key={item.kind}>
+            <span>{item.kind}</span>
+            <strong>{item.title}</strong>
+            <p>{item.note}</p>
           </article>
         ))}
-        <div className="setup-shared-repo">
-          <span>↔</span>
-          <strong>{visuals.setup.sharedRepo}</strong>
-        </div>
-      </div>
-
-      <section className="setup-process">
-        <span className="setup-section-label">{visuals.setup.workflowLabel}</span>
-        <div>
-          {visuals.setup.workflow.map((step, index) => (
-            <article key={step.number}>
-              <span>{step.number}</span>
-              <strong>{step.title}</strong>
-              <small>{step.note}</small>
-              {index < visuals.setup.workflow.length - 1 && <b aria-hidden="true">→</b>}
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="setup-knowledge">
-        <span className="setup-section-label">{visuals.setup.knowledgeLabel}</span>
-        <div className="setup-knowledge-grid">
-          {visuals.setup.knowledge.map((item) => (
-            <article className={`knowledge-card knowledge-${item.id}`} key={item.id}>
-              <header>
-                <span>{item.kind}</span>
-                <code>{item.path}</code>
-              </header>
-              <strong>{item.title}</strong>
-              <p>{item.note}</p>
-              <small>{item.lifetime}</small>
-            </article>
-          ))}
-          <div className="setup-context-benefit">{visuals.setup.contextBenefit}</div>
-        </div>
-      </section>
-
-      <aside className="setup-ecosystem">
-        <div>
-          <span>{visuals.setup.ecosystem.title}</span>
-          <small>{visuals.setup.ecosystem.available}</small>
-        </div>
-        <div>
-          <strong>{visuals.setup.ecosystem.choice}</strong>
-          <small>{visuals.setup.ecosystem.reason}</small>
-        </div>
       </aside>
+    </div>
+  );
+}
+
+function SetupPlanVisual() {
+  return (
+    <div className="setup-plan-board">
+      <header><span>MARKDOWN</span><code>{visuals.setup.plan.path}</code></header>
+      <div className="setup-plan-content">
+        {visuals.setup.plan.sections.map((section) => (
+          <section key={section.title}>
+            <strong># {section.title}</strong>
+            {section.lines.map((line) => <p key={line}>{line}</p>)}
+          </section>
+        ))}
+      </div>
     </div>
   );
 }
@@ -2658,25 +2684,79 @@ function WorkFutureVisual() {
   );
 }
 
+function AutomationBoundaryVisual() {
+  const boundary = visuals.automationBoundary;
+
+  return (
+    <div className="automation-boundary-board">
+      <div className="automation-boundary-columns">
+        <section className="automation-boundary-agent">
+          <header>{boundary.automatesLabel}</header>
+          <ol>
+            {boundary.automates.map((item, index) => (
+              <li key={item}><span>{String(index + 1).padStart(2, "0")}</span><strong>{item}</strong></li>
+            ))}
+          </ol>
+        </section>
+        <section className="automation-boundary-human">
+          <header>{boundary.humanLabel}</header>
+          <ol>
+            {boundary.human.map((item, index) => (
+              <li key={item}><span>{String(index + 1).padStart(2, "0")}</span><strong>{item}</strong></li>
+            ))}
+          </ol>
+        </section>
+      </div>
+      <div className="automation-boundary-conditions">
+        {boundary.conditions.map((condition) => <small key={condition}>{condition}</small>)}
+      </div>
+      <footer>{boundary.responsibility}</footer>
+    </div>
+  );
+}
+
 function ModelProductVisual() {
   return (
-    <div className="model-product-stack">
-      <div className="model-product-layers">
-        {visuals.modelProduct.layers.map((layer, index) => (
-          <div className="model-product-segment" key={layer.id}>
-            <article className={`model-product-card model-product-${layer.id}`}>
-              <header><span>{layer.number}</span><small>{layer.subtitle}</small></header>
-              <strong>{layer.title}</strong>
-              <div>{layer.items.map((item) => <b key={item}>{item}</b>)}</div>
-            </article>
-            {index < visuals.modelProduct.layers.length - 1 && (
-              <span className="model-product-plus" aria-hidden="true">+</span>
-            )}
-          </div>
-        ))}
-      </div>
-      <footer>{visuals.modelProduct.note}</footer>
-    </div>
+    <figure className="model-product-visual">
+      {/* eslint-disable-next-line @next/next/no-img-element -- static presentation asset is served directly. */}
+      <img
+        src={visuals.modelProduct.image}
+        alt={visuals.modelProduct.alt}
+        width="1080"
+        height="605"
+        loading="eager"
+      />
+    </figure>
+  );
+}
+
+function HumanAiComplexityVisual() {
+  return (
+    <figure className="human-ai-complexity-visual">
+      {/* eslint-disable-next-line @next/next/no-img-element -- static presentation asset is served directly. */}
+      <img
+        src="/human-ai-complexity.png"
+        alt="График роста сложности задач: возможности ИИ растут ступенчато, а человек начинает решать более сложные задачи"
+        width="903"
+        height="655"
+        loading="eager"
+      />
+    </figure>
+  );
+}
+
+function OutcomeOverImplementationVisual() {
+  return (
+    <figure className="outcome-over-implementation-visual">
+      {/* eslint-disable-next-line @next/next/no-img-element -- static presentation asset is served directly. */}
+      <img
+        src="/outcome-over-implementation.png"
+        alt="Диалог: разработчик рассказывает о сложной реализации, а заказчик просит просто выполнить его заказ"
+        width="842"
+        height="538"
+        loading="eager"
+      />
+    </figure>
   );
 }
 
@@ -2745,6 +2825,48 @@ function CapabilityArtifactsVisual() {
         <strong>{visuals.capabilityArtifacts.formula}</strong>
         <span>{visuals.capabilityArtifacts.warning}</span>
       </div>
+    </div>
+  );
+}
+
+function SecurityControlVisual() {
+  const security = visuals.securityControl;
+
+  return (
+    <div className="security-control-board">
+      <div className="security-control-incidents">
+        {security.incidents.map((incident) => (
+          <article className={`security-incident-${incident.id}`} key={incident.id}>
+            <header>
+              <span>{incident.number} · {incident.label}</span>
+              <strong>{incident.model}</strong>
+            </header>
+            <div className="security-control-path">
+              {incident.path.map((step, index) => (
+                <Fragment key={step}>
+                  <span>{step}</span>
+                  {index < incident.path.length - 1 && <b aria-hidden="true">→</b>}
+                </Fragment>
+              ))}
+            </div>
+            <footer>{incident.result}</footer>
+          </article>
+        ))}
+      </div>
+      <section className="security-control-threshold">
+        <span>{security.threshold.label}</span>
+        <div>
+          <strong>{security.threshold.title}</strong>
+          <p>{security.threshold.note}</p>
+        </div>
+      </section>
+      <section className="security-control-regulation">
+        <header>{security.regulation.label}</header>
+        <div>
+          {security.regulation.items.map((item) => <span key={item}>{item}</span>)}
+        </div>
+        <footer>{security.regulation.conclusion}</footer>
+      </section>
     </div>
   );
 }
@@ -2830,8 +2952,8 @@ function AgentUseCasesVisual() {
         {visuals.agentUseCases.cases.map((useCase) => (
           <article className={`agent-use-case-${useCase.id}`} key={useCase.id}>
             <span>{useCase.role}</span>
-            <small>{useCase.task}</small>
             <strong>{useCase.result}</strong>
+            <small>{useCase.task}</small>
             <footer>{useCase.tools}</footer>
           </article>
         ))}
@@ -2994,6 +3116,7 @@ function Visual({ name }: { name: string }) {
     case "retrospective": return <RetrospectiveVisual />;
     case "capabilities-today": return <CapabilitiesTodayVisual />;
     case "capability-artifacts": return <CapabilityArtifactsVisual />;
+    case "security-control": return <SecurityControlVisual />;
     case "capability-research": return <CapabilityResearchVisual />;
     case "modalities": return <ModalitiesVisual />;
     case "capabilities": return <CapabilitiesVisual />;
@@ -3011,11 +3134,16 @@ function Visual({ name }: { name: string }) {
     case "effort-simple": return <EffortVisual taskId="simple" />;
     case "effort-complex": return <EffortVisual taskId="complex" />;
     case "chooser": return <ChooserLab />;
-    case "setup": return <SetupVisual />;
+    case "setup-flow": return <SetupFlowVisual />;
+    case "setup-docs": return <SetupDocsVisual />;
+    case "setup-plan": return <SetupPlanVisual />;
     case "trajectory": return <TrajectoryVisual />;
     case "industry-next": return <IndustryNextVisual />;
     case "skills": return <SkillsVisual />;
     case "work-future": return <WorkFutureVisual />;
+    case "automation-boundary": return <AutomationBoundaryVisual />;
+    case "outcome-over-implementation": return <OutcomeOverImplementationVisual />;
+    case "human-ai-complexity": return <HumanAiComplexityVisual />;
     case "final": return <FinalVisual />;
     default:
       if (name.startsWith("deep-")) {
@@ -3192,7 +3320,7 @@ export default function TalkDeck({
           <nav className="reading-toc" aria-label="Содержание">
           {slides.map((slide, index) => (
             <a href={`#${slide.id}`} key={slide.id}>
-              <span>{String(index + 1).padStart(2, "0")}</span>{slide.title}
+              <span>{String(index + 1).padStart(2, "0")}</span>{slide.title ?? slide.kicker ?? slide.id}
             </a>
           ))}
           {bonusSlides.length > 0 && (
@@ -3200,7 +3328,7 @@ export default function TalkDeck({
               <strong>Бонусные слайды</strong>
               {bonusSlides.map((slide, index) => (
                 <a href={`#${slide.id}`} key={slide.id}>
-                  <span>B{String(index + 1).padStart(2, "0")}</span>{slide.title}
+                  <span>B{String(index + 1).padStart(2, "0")}</span>{slide.title ?? slide.kicker ?? slide.id}
                 </a>
               ))}
             </div>
@@ -3211,8 +3339,8 @@ export default function TalkDeck({
             <article className="reading-slide" id={slide.id} key={slide.id}>
               <div className="reading-slide-heading">
                 <span>{String(index + 1).padStart(2, "0")} · {slide.section}</span>
-                <EditableText value={slide.title} as="h2" editing={isEditing} onSave={(value) => void saveSlideField(slide, "title", value)} />
-                {slide.subtitle && <EditableText value={slide.subtitle} as="p" editing={isEditing} onSave={(value) => void saveSlideField(slide, "subtitle", value)} />}
+                {(slide.title || isEditing) && <EditableText value={slide.title ?? ""} as="h2" editing={isEditing} onSave={(value) => void saveSlideField(slide, "title", value)} />}
+                {(slide.subtitle || isEditing) && <EditableText value={slide.subtitle ?? ""} as="p" className="editable-subtitle" editing={isEditing} onSave={(value) => void saveSlideField(slide, "subtitle", value)} />}
               </div>
               <div className="reading-visual"><Visual name={slide.visual} /></div>
               <HtmlCopy markdown={slide.body} references={references} editing={isEditing} onSave={(value) => void saveSlideField(slide, "body", value)} />
@@ -3231,8 +3359,8 @@ export default function TalkDeck({
                 <article className="reading-slide" id={slide.id} key={slide.id}>
                   <div className="reading-slide-heading">
                     <span>B{String(index + 1).padStart(2, "0")} · {slide.section}</span>
-                    <EditableText value={slide.title} as="h2" editing={isEditing} onSave={(value) => void saveSlideField(slide, "title", value)} />
-                    {slide.subtitle && <EditableText value={slide.subtitle} as="p" editing={isEditing} onSave={(value) => void saveSlideField(slide, "subtitle", value)} />}
+                    {(slide.title || isEditing) && <EditableText value={slide.title ?? ""} as="h2" editing={isEditing} onSave={(value) => void saveSlideField(slide, "title", value)} />}
+                    {(slide.subtitle || isEditing) && <EditableText value={slide.subtitle ?? ""} as="p" className="editable-subtitle" editing={isEditing} onSave={(value) => void saveSlideField(slide, "subtitle", value)} />}
                   </div>
                   <div className="reading-visual"><Visual name={slide.visual} /></div>
                   <HtmlCopy markdown={slide.body} references={references} editing={isEditing} onSave={(value) => void saveSlideField(slide, "body", value)} />
@@ -3311,8 +3439,8 @@ export default function TalkDeck({
         {slide.visual !== "hero" && (
           <div className="slide-copy">
             <EditableText value={slide.kicker} as="div" className="slide-kicker" editing={isEditing} onSave={(value) => void saveSlideField(slide, "kicker", value)} />
-            <EditableText value={slide.title} as="h1" editing={isEditing} onSave={(value) => void saveSlideField(slide, "title", value)} />
-            {slide.subtitle && <EditableText value={slide.subtitle} as="p" className="slide-subtitle" editing={isEditing} onSave={(value) => void saveSlideField(slide, "subtitle", value)} />}
+            {(slide.title || isEditing) && <EditableText value={slide.title ?? ""} as="h1" editing={isEditing} onSave={(value) => void saveSlideField(slide, "title", value)} />}
+            {(slide.subtitle || isEditing) && <EditableText value={slide.subtitle ?? ""} as="p" className="slide-subtitle editable-subtitle" editing={isEditing} onSave={(value) => void saveSlideField(slide, "subtitle", value)} />}
             <HtmlCopy markdown={slide.body} references={references} editing={isEditing} onSave={(value) => void saveSlideField(slide, "body", value)} />
             <SourceList slide={slide} references={references} />
           </div>

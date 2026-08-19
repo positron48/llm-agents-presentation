@@ -56,33 +56,39 @@ test("client includes the reading mode, notes and bibliography", async () => {
   assert.match(source, /slide\.visual !== "hero"/);
   assert.match(source, /process\.env\.NODE_ENV !== "production"/);
   assert.match(source, /contentEditable=\{editing\}/);
+  assert.match(source, /slide\.subtitle \|\| isEditing/);
+  assert.match(source, /editable-subtitle/);
   assert.match(source, /\/api\/local-talk-editor/);
   assert.match(viteConfig, /apply: "serve"/);
   assert.match(viteConfig, /content", filename/);
 });
 
 test("content is editable Markdown and keeps bonus slides outside the core talk", async () => {
-  const [markdown, bonusMarkdown, generated, references, visuals, tokenSamples] = await Promise.all([
+  const [markdown, bonusMarkdown, generated, generator, references, visuals, tokenSamples] = await Promise.all([
     readFile(new URL("../content/talk.ru.md", import.meta.url), "utf8"),
     readFile(new URL("../content/bonus-transformer.ru.md", import.meta.url), "utf8"),
     readFile(new URL("../content/generated.ts", import.meta.url), "utf8"),
+    readFile(new URL("../scripts/build-content.mjs", import.meta.url), "utf8"),
     readFile(new URL("../content/references.json", import.meta.url), "utf8"),
     readFile(new URL("../content/visuals.ru.json", import.meta.url), "utf8"),
     readFile(new URL("../content/token-samples.ru.json", import.meta.url), "utf8"),
   ]);
 
   assert.match(markdown, /<!-- notes -->/);
+  assert.doesNotMatch(generator, /\["id", "section", "title", "visual", "minutes"\]/);
   assert.match(bonusMarkdown, /id: transformer-route/);
   assert.match(bonusMarkdown, /id: generation/);
   assert.match(markdown, /brand: LLM \/ AGENTS/);
-  assert.match(generated, /"totalMinutes": 40/);
-  assert.match(generated, /"slideCount": 24/);
+  assert.match(generated, /"totalMinutes": 46/);
+  assert.match(generated, /"slideCount": 29/);
   assert.match(generated, /"id": "learning"/);
   assert.doesNotMatch(generated, /"id": "agent-loop"/);
   assert.match(generated, /"id": "model-lines"/);
   assert.match(generated, /"id": "model-product"/);
+  assert.match(generated, /"id": "model-product"[\s\S]*"id": "harness"[\s\S]*"id": "agent-use-cases"[\s\S]*"id": "retrospective"/);
   assert.match(generated, /"id": "retrospective"/);
   assert.match(generated, /"id": "capability-artifacts"/);
+  assert.match(generated, /"id": "capability-artifacts"[\s\S]*"id": "security-control"[\s\S]*"id": "model-lines"/);
   assert.doesNotMatch(generated, /"id": "capability-research"/);
   assert.doesNotMatch(generated, /"id": "modalities"/);
   assert.doesNotMatch(generated, /"id": "tools"/);
@@ -92,8 +98,10 @@ test("content is editable Markdown and keeps bonus slides outside the core talk"
   assert.doesNotMatch(generated, /"id": "non-code-agent"/);
   assert.doesNotMatch(generated, /"id": "agent-work-inbox"/);
   assert.doesNotMatch(generated, /"id": "agent-autonomy"/);
-  assert.match(generated, /"id": "effort-evolution"/);
+  assert.doesNotMatch(generated, /"id": "effort-evolution"/);
   assert.match(generated, /"id": "work-future"/);
+  assert.match(generated, /"id": "outcome-over-implementation"[\s\S]*"id": "work-future"[\s\S]*"id": "automation-boundary"[\s\S]*"id": "human-ai-complexity"/);
+  assert.match(generated, /"id": "outcome-over-implementation"[\s\S]*?"body": "",[\s\S]*?"notes": "Мем намеренно сталкивает/);
   assert.doesNotMatch(generated, /"id": "trajectory"/);
   assert.doesNotMatch(generated, /"id": "industry-next"/);
   assert.doesNotMatch(generated, /"id": "skills"/);
@@ -105,11 +113,13 @@ test("content is editable Markdown and keeps bonus slides outside the core talk"
   assert.match(generated, /"id": "context-relations"/);
   assert.match(generated, /"id": "effort-simple"/);
   assert.match(generated, /"id": "effort-complex"/);
+  assert.match(generated, /"id": "setup-flow"[\s\S]*"id": "setup-docs"[\s\S]*"id": "setup-plan"/);
   assert.match(generated, /"bonusSlideCount": 38/);
   assert.match(generated, /"id": "transformer-summary"/);
   assert.match(generated, /"id": "kv-cache"/);
-  assert.match(generated, /"id": "setup"/);
-  assert.equal(JSON.parse(references).length, 58);
+  assert.doesNotMatch(generated, /"id": "setup"/);
+  assert.equal(JSON.parse(references).length, 60);
   assert.equal(JSON.parse(visuals).training.length, 4);
+  assert.equal(JSON.parse(visuals).harness.rows.length, 11);
   assert.equal(JSON.parse(tokenSamples).length, 3);
 });

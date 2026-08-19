@@ -22,7 +22,7 @@ function parseFrontMatter(block) {
     metadata[key] = key === "minutes" ? Number(value) : value;
   }
 
-  const [body, notes = ""] = match[2].split("\n<!-- notes -->\n");
+  const [body, notes = ""] = match[2].split(/\n?<!-- notes -->\n/);
   return {
     ...metadata,
     body: body.trim(),
@@ -47,7 +47,7 @@ const referenceIds = new Set(references.map((reference) => reference.id));
 const slideIds = new Set();
 
 for (const slide of allSlides) {
-  for (const required of ["id", "section", "title", "visual", "minutes"]) {
+  for (const required of ["id", "section", "visual", "minutes"]) {
     if (!slide[required]) {
       throw new Error(`Slide ${slide.id ?? "<unknown>"} misses ${required}`);
     }
@@ -80,7 +80,7 @@ export const bonusSlides = ${JSON.stringify(bonusSlides, null, 2)} as const;
 export const references = ${JSON.stringify(references, null, 2)} as const;
 export const talkMeta = ${JSON.stringify(
   {
-    title: slides[0].title,
+    title: slides[0].title ?? slides[0].kicker ?? "Презентация",
     description: slides[0].subtitle ?? slides[0].body.split("\n")[0],
     kicker: slides[0].kicker ?? "",
     brand: slides[0].brand ?? "LLM / AGENTS",

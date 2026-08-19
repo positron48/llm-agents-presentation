@@ -404,5 +404,19 @@
     "publisher": "Cursor",
     "year": "2025",
     "url": "https://cursor.com/changelog/0-50"
+  },
+  {
+    "id": 59,
+    "title": "Investigating three real-world incidents in our cybersecurity evaluations",
+    "publisher": "Anthropic",
+    "year": "2026",
+    "url": "https://www.anthropic.com/news/investigating-incidents-cybersecurity-evals"
+  },
+  {
+    "id": 60,
+    "title": "General-purpose AI obligations under the AI Act",
+    "publisher": "European Commission",
+    "year": "2025",
+    "url": "https://digital-strategy.ec.europa.eu/en/factpages/general-purpose-ai-obligations-under-ai-act"
   }
 ]

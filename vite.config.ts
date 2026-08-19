@@ -43,7 +43,7 @@ function updateSlideSource(
     }
     frontMatter = frontMatter.replace(/\n{2,}/g, "\n").trim();
   } else {
-    const [body = "", notes = ""] = content.split("\n<!-- notes -->\n");
+    const [body = "", notes = ""] = content.split(/\n?<!-- notes -->\n/);
     content = field === "body"
       ? `${value.trim()}\n\n<!-- notes -->\n\n${notes.trim()}`
       : `${body.trim()}\n\n<!-- notes -->\n\n${value.trim()}`;

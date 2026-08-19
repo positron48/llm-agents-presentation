@@ -352,16 +352,21 @@
     "loopLabel": "цикл может повторяться много раз"
   },
   "harness": {
-    "columns": ["Только диалог", "Управляемые tools", "Workspace-агент"],
+    "columns": ["Чат", "Агент"],
     "rows": [
-      { "label": "История диалога", "values": [true, true, true] },
-      { "label": "Вручную приложенные файлы", "values": [true, true, true] },
-      { "label": "Поиск и вычисления", "values": [false, true, true] },
-      { "label": "Автодоступ к workspace", "values": [false, false, true] },
-      { "label": "Терминал и тесты", "values": [false, false, true] },
-      { "label": "Длинный цикл", "values": [false, "частично", true] },
-      { "label": "Радиус возможных действий", "values": ["нет", "ограничен", "широкий"] }
-    ]
+      { "label": "Рабочий цикл", "values": [true, true] },
+      { "label": "История диалога", "values": [true, true] },
+      { "label": "Приложенные файлы", "values": [true, true] },
+      { "label": "Веб-поиск", "values": [true, true] },
+      { "label": "Запуск Python-кода", "values": [true, true] },
+      { "label": "Генерация изображений", "values": [true, true] },
+      { "label": "Репозиторий", "values": [false, true] },
+      { "label": "Терминал / консоль", "values": [false, true] },
+      { "label": "Тесты", "values": [false, true] },
+      { "label": "Git и CLI", "values": [false, true] },
+      { "label": "Production: БД и логи *", "values": [false, true] }
+    ],
+    "note": "* только при отдельном подключении и разрешении"
   },
   "agentLoop": {
     "steps": [
@@ -511,8 +516,7 @@
           }
         ]
       }
-    },
-    "note": "СХЕМА, НЕ BENCHMARK: medium разных моделей не равны; проверяйте кандидатов на собственном eval-наборе."
+    }
   },
   "chooser": {
     "riskLabel": "Цена ошибки",
@@ -555,56 +559,45 @@
     "footnote": "Чем дороже ошибка, тем важнее не только model и effort, но и независимая проверка."
   },
   "setup": {
-    "roles": [
-      {
-        "id": "phpstorm",
-        "kind": "IDE · РУЧНОЙ КОНТРОЛЬ",
-        "title": "PhpStorm",
-        "note": "Навигация · точечные правки · refactoring · debugger · просмотр diff",
-        "result": "Я вижу и контролирую код"
-      },
-      {
-        "id": "codex",
-        "kind": "AGENT · ДЛИННЫЙ ЦИКЛ",
-        "title": "Codex",
-        "note": "Исследование · план · изменения · terminal · тесты · проверка",
-        "result": "Задача движется от запроса до проверенного результата"
-      }
+    "flow": [
+      { "number": "01", "actor": "Я", "title": "Planka", "note": "выбираю задачу" },
+      { "number": "02", "actor": "Я", "title": "Формулирую ТЗ", "note": "цель · ограничения · готовность" },
+      { "number": "03", "actor": "Codex", "title": "Исследует контекст", "note": "читает или создаёт доменные docs" },
+      { "number": "04", "actor": "Codex", "title": "Пишет план", "note": "изменения · тесты · риски" },
+      { "number": "05", "actor": "Я", "title": "Проверяю план", "note": "читаю · задаю вопросы · корректирую" },
+      { "number": "06", "actor": "Codex", "title": "Реализует", "note": "код · тесты · self-review" },
+      { "number": "07", "actor": "Я · PhpStorm", "title": "Ревьюю код", "note": "поведение · архитектура · diff" },
+      { "number": "08", "actor": "GitLab", "title": "Создаём MR", "note": "только если всё хорошо" }
     ],
-    "sharedRepo": "один рабочий каталог · один git diff",
-    "workflowLabel": "NEW-TASK WORKFLOW",
-    "workflow": [
-      { "number": "01", "title": "Scope", "note": "repo · цель · ограничения" },
-      { "number": "02", "title": "Relevant context", "note": "правила · доменные docs" },
-      { "number": "03", "title": "Evidence", "note": "код · тесты · логи · аналоги" },
-      { "number": "04", "title": "Plan + approval", "note": "без изменений до аппрува" },
-      { "number": "05", "title": "Implement + verify", "note": "код · тесты · итоговый diff" }
+    "retry": "есть замечания → вернуть Codex на доработку",
+    "tree": [
+      { "depth": 0, "kind": "folder", "name": "project/" },
+      { "depth": 1, "kind": "file", "name": "AGENTS.md", "badge": "RULES", "note": "короткие правила для агента" },
+      { "depth": 1, "kind": "folder", "name": "docs/" },
+      { "depth": 2, "kind": "folder", "name": "<domain>/", "badge": "DOMAIN" },
+      { "depth": 3, "kind": "file", "name": "README.md", "note": "обзор и границы" },
+      { "depth": 3, "kind": "file", "name": "process.md", "note": "основной процесс" },
+      { "depth": 3, "kind": "file", "name": "<topic>.md", "note": "правила и частные сценарии" },
+      { "depth": 2, "kind": "folder", "name": "tasks/", "badge": "TASK" },
+      { "depth": 3, "kind": "file", "name": "YYYY-MM-DD-<task>-plan.md", "note": "одна задача — один план" },
+      { "depth": 1, "kind": "folder", "name": "modules/" },
+      { "depth": 2, "kind": "folder", "name": "<domain-bundle>/" }
     ],
-    "knowledgeLabel": "КОНТЕКСТ, КОТОРЫЙ НЕ НУЖНО СОБИРАТЬ ЗАНОВО",
-    "knowledge": [
-      {
-        "id": "domain",
-        "kind": "STABLE",
-        "path": "docs/<domain>/",
-        "title": "Доменные документы",
-        "note": "архитектура · процессы · бизнес-правила · контракты",
-        "lifetime": "переиспользуются между задачами"
-      },
-      {
-        "id": "task",
-        "kind": "TASK-SPECIFIC",
-        "path": "docs/tasks/",
-        "title": "Планы задач",
-        "note": "границы · решение · файлы · тесты · rollout · риски",
-        "lifetime": "фиксируют решения одной задачи"
-      }
+    "docsLegend": [
+      { "kind": "RULES", "title": "AGENTS.md", "note": "общий flow, тесты, архитектурные ограничения и ссылки на подробные docs" },
+      { "kind": "DOMAIN", "title": "Живёт долго", "note": "как устроена предметная область" },
+      { "kind": "TASK", "title": "Живёт с задачей", "note": "что именно меняем сейчас" }
     ],
-    "contextBenefit": "Новая задача читает релевантный срез, а не весь проект",
-    "ecosystem": {
-      "title": "Готовые варианты существуют",
-      "available": "plugins · MCP · IDE rules · hosted memory",
-      "choice": "Мой выбор: Markdown + свой skill + стандартные tools",
-      "reason": "гибко · легковесно · прозрачно · хранится рядом с кодом"
+    "plan": {
+      "path": "docs/tasks/YYYY-MM-DD-support-ticket-sync-plan.md",
+      "sections": [
+        { "title": "Цель и границы", "lines": ["Сейчас: чтение из внешнего API по запросу.", "Будет: локальный идемпотентный read model тикетов и сообщений."] },
+        { "title": "БД и миграция", "lines": ["tickets + ticket_messages + users", "PK/FK, UNIQUE по external_id, индексы по updated", "миграция поставляется отдельно от sync-кода"] },
+        { "title": "Этапы большой задачи", "lines": ["MR 1 · миграция и repository", "MR 2 · API, sync-сервис и CLI", "MR 3 · backfill, cron и мониторинг"] },
+        { "title": "Алгоритм", "lines": ["watermark по updated − overlap", "полный слепок изменившегося тикета", "тикет + авторы + сообщения в одной транзакции"] },
+        { "title": "Проверка", "lines": ["• pagination и одинаковый updated", "• overlap не создаёт дублей", "• ошибка тикета откатывает транзакцию"] },
+        { "title": "Rollout", "lines": ["Миграция → ограниченный запуск → backfill → cron → мониторинг lag."] }
+      ]
     }
   },
   "trajectory": {
@@ -756,31 +749,32 @@
     ],
     "footnote": "Профессия = смесь задач. ИИ сначала меняет состав работы, а не стирает должность целиком."
   },
-  "modelProduct": {
-    "layers": [
-      {
-        "number": "01",
-        "id": "model",
-        "title": "MODEL",
-        "subtitle": "обученные веса",
-        "items": ["контекст → токены", "предсказание", "reasoning"]
-      },
-      {
-        "number": "02",
-        "id": "product",
-        "title": "PRODUCT",
-        "subtitle": "интерфейс и состояние",
-        "items": ["system prompt", "диалог и файлы", "tools"]
-      },
-      {
-        "number": "03",
-        "id": "agent",
-        "title": "AGENT HARNESS",
-        "subtitle": "длинная работа",
-        "items": ["цикл и workspace", "permissions", "verification"]
-      }
+  "automationBoundary": {
+    "automatesLabel": "ХОРОШО АВТОМАТИЗИРУЕТСЯ",
+    "automates": [
+      "чтение документации",
+      "поиск ответов в коде",
+      "аналитика данных · БД и логи",
+      "тестирование интеграций *",
+      "написание кода **"
     ],
-    "note": "Одна модель + разная обвязка = разное поведение"
+    "humanLabel": "ПЛОХО АВТОМАТИЗИРУЕТСЯ",
+    "human": [
+      "готовый текст без редактуры",
+      "законы и нормативные требования без эксперта",
+      "создание нового направления",
+      "неоднозначные решения",
+      "неявный контекст компании"
+    ],
+    "conditions": [
+      "* при наличии полноценного тестового контура",
+      "** с чётким ТЗ и проверяемым результатом"
+    ],
+    "responsibility": "РЕШЕНИЕ И ОТВЕТСТВЕННОСТЬ — НА ЧЕЛОВЕКЕ"
+  },
+  "modelProduct": {
+    "image": "/model-agent-harness.png",
+    "alt": "LLM в упряжи harness управляет агентом, который пишет код"
   },
   "retrospective": {
     "entries": [
@@ -852,6 +846,49 @@
     "formula": "ДЕКОМПОЗИЦИЯ + ПАРАЛЛЕЛЬНАЯ РАБОТА + СИЛЬНЫЙ VERIFIER",
     "warning": "НЕ ОДИН PROMPT · НЕ БЕСПЛАТНО · НЕ БЕЗ ЧЕЛОВЕКА"
   },
+  "securityControl": {
+    "incidents": [
+      {
+        "id": "runtime",
+        "number": "01",
+        "label": "CONTAINMENT",
+        "model": "GPT‑5.6 SOL + PRE‑RELEASE",
+        "path": [
+          "EVAL · CYBER REFUSALS ↓",
+          "0-DAY · PACKAGE PROXY",
+          "INTERNET → HUGGING FACE PROD"
+        ],
+        "result": "изоляция не удержала цепочку действий"
+      },
+      {
+        "id": "monitoring",
+        "number": "02",
+        "label": "MONITORING",
+        "model": "CLAUDE MYTHOS 5",
+        "path": [
+          "CTF · «NO INTERNET»",
+          "MALICIOUS PYPI PACKAGE",
+          "15 REAL SYSTEMS"
+        ],
+        "result": "инцидент нашли только при review 141 006 runs"
+      }
+    ],
+    "threshold": {
+      "label": "ОГРАНИЧЕНИЕ",
+      "title": "Контроль не успевает за действиями",
+      "note": "больше шагов и систем — позже обнаружение"
+    },
+    "regulation": {
+      "label": "РЕГУЛИРОВАНИЕ СИСТЕМНЫХ РИСКОВ",
+      "items": [
+        "EVAL + RED TEAM",
+        "ACCESS + SANDBOX",
+        "LOGS + INCIDENTS",
+        "RESPONSIBILITY"
+      ],
+      "conclusion": "РЕГУЛИРУЕТСЯ УЖЕ НЕ ТОЛЬКО ОТВЕТ — ВЕСЬ КОНТУР ДЕЙСТВИЙ"
+    }
+  },
   "capabilityResearch": {
     "study": "RE-BENCH · 7 НОВЫХ ENVIRONMENTS · 71 HUMAN ATTEMPTS",
     "comparisons": [
@@ -917,52 +954,45 @@
     "checks": ["ссылки открываются", "числа воспроизводимы", "неизвестное отмечено", "действия подтверждены"]
   },
   "agentUseCases": {
-    "lead": "НЕ ПРОФЕССИИ — КОНКРЕТНЫЕ ПРОВЕРЯЕМЫЕ РЕЗУЛЬТАТЫ",
+    "lead": "ВОПРОС → ДОКАЗАТЕЛЬСТВО В КОДЕ → ВОСПРОИЗВОДИМЫЙ ОТВЕТ",
     "cases": [
       {
-        "id": "research",
-        "role": "ИССЛЕДОВАНИЕ",
-        "task": "найти и сопоставить",
-        "result": "обзор рынка со ссылками",
-        "tools": "web · документы"
+        "id": "integration",
+        "role": "01 · ИНТЕГРАЦИЯ",
+        "task": "протокол · auth · формат запросов",
+        "result": "По какому протоколу мы взаимодействуем с внешним сервисом X?",
+        "tools": "API-клиенты · конфигурация · логи"
       },
       {
-        "id": "documents",
-        "role": "ДОКУМЕНТЫ",
-        "task": "прочитать и сверить",
-        "result": "таблица расхождений договора",
-        "tools": "файлы · OCR · таблица"
+        "id": "storage",
+        "role": "02 · ДАННЫЕ",
+        "task": "структура хранения · связи",
+        "result": "В каких таблицах хранится информация?",
+        "tools": "миграции · ORM · SQL"
       },
       {
-        "id": "analytics",
-        "role": "АНАЛИТИКА",
-        "task": "обновить и объяснить",
-        "result": "метрики, графики и аномалии",
-        "tools": "данные · Python"
+        "id": "calculation",
+        "role": "03 · БИЗНЕС-ЛОГИКА",
+        "task": "формулы · условия · исключения",
+        "result": "Как рассчитываются данные?",
+        "tools": "сервисы · тесты · история"
       },
       {
-        "id": "customers",
-        "role": "КЛИЕНТЫ",
-        "task": "собрать контекст",
-        "result": "черновик ответа + CRM",
-        "tools": "почта · CRM · база знаний"
+        "id": "conversion",
+        "role": "04 · АНАЛИТИКА",
+        "task": "группы · числитель · знаменатель",
+        "result": "Какова конверсия в тестовых группах?",
+        "tools": "схема БД · SQL · события"
       },
       {
-        "id": "content",
-        "role": "КОНТЕНТ",
-        "task": "адаптировать и собрать",
-        "result": "презентация, пост, иллюстрации",
-        "tools": "доки · изображения · web"
-      },
-      {
-        "id": "personal",
-        "role": "ЛИЧНЫЕ ДЕЛА",
-        "task": "спланировать и согласовать",
-        "result": "поездка, встреча, покупка",
-        "tools": "поиск · календарь · сервисы"
+        "id": "admin-setting",
+        "role": "05 · НАСТРОЙКИ",
+        "task": "от UI до поведения системы",
+        "result": "Как работает параметр в админке?",
+        "tools": "форма · API · конфиг · код"
       }
     ],
-    "formula": ["ДАННЫЕ ДОСТУПНЫ", "ДЕЙСТВИЯ РАЗРЕШЕНЫ", "РЕЗУЛЬТАТ ПРОВЕРЯЕМ"]
+    "formula": ["КОД И КОНФИГ", "СХЕМА И ДАННЫЕ", "ТЕСТЫ И ИСТОРИЯ"]
   },
   "agentAutonomy": {
     "axis": "РАСТЁТ ВНЕШНИЙ ЭФФЕКТ И ЦЕНА ОШИБКИ →",

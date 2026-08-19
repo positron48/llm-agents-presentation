@@ -22,8 +22,8 @@ id: token-ids
 track: bonus
 section: Transformer · вход
 kicker: Бонусный трек · 02
-title: На входе — реальные номера токенов
-subtitle: Текст уже закончился. Дальше модель работает с числами
+title: На входе — номера токенов
+subtitle: Текст заканчивается. Дальше модель работает с числами
 visual: deep-token-ids
 minutes: 1
 ---
@@ -48,7 +48,7 @@ minutes: 1
 ---
 Embedding table хранит по одному вектору для каждого элемента словаря.
 
-Lookup не вычисляет смысл по формуле — он достаёт обученную строку чисел [5].
+Lookup достаёт обученную строку чисел [5].
 
 <!-- notes -->
 
@@ -98,7 +98,7 @@ id: position-encoding
 track: bonus
 section: Transformer · позиция
 kicker: Бонусный трек · 06
-title: Вектор получает положение в последовательности
+title: Вектор получает положение
 subtitle: Содержание токена + информация о его положении
 visual: deep-position-encoding
 minutes: 1
@@ -248,7 +248,7 @@ id: dot-product
 track: bonus
 section: Transformer · attention
 kicker: Бонусный трек · 14
-title: Q и K получают score согласованности
+title: Q и K получают score связности
 subtitle: Большое положительное скалярное произведение усиливает соответствующую связь
 visual: deep-dot-product
 minutes: 1
@@ -419,14 +419,14 @@ id: mlp-token
 track: bonus
 section: Transformer · MLP
 kicker: Бонусный трек · 23
-title: MLP преобразует каждый токен отдельно
-subtitle: Attention смешал позиции — теперь одна сеть применяется к каждой строке
+title: MLP вычисляет поправку для каждой позиции
+subtitle: Attention смешал позиции — MLP отдельно решает, что изменить в каждой строке
 visual: deep-mlp-token
 minutes: 1
 ---
-Одна и та же feed-forward network обрабатывает каждый токен независимо.
+Одна и та же feed-forward network вычисляет `ΔMLP` для каждой позиции независимо.
 
-Она не читает соседние позиции напрямую: обмен уже сделал attention [2].
+Residual-шаг прибавляет эту поправку к исходному состоянию: `x + ΔMLP`. Соседние позиции MLP напрямую не читает — обмен уже сделал attention [2].
 
 <!-- notes -->
 
@@ -643,7 +643,7 @@ id: next-token-training
 track: bonus
 section: Transformer · обучение
 kicker: Бонусный трек · 35
-title: Правильный ответ сдвинут на один токен
+title: Обучение
 subtitle: На каждой позиции модель учится предсказывать следующий элемент
 visual: deep-training
 minutes: 1
@@ -700,8 +700,7 @@ id: transformer-summary
 track: bonus
 section: Transformer · итог
 kicker: Бонусный трек · 38
-title: Теперь вся цепочка видна целиком
-subtitle: Каждый прямоугольник — уже знакомое вычисление
+title: Вся цепочка расчетов
 visual: deep-summary
 minutes: 1
 ---
