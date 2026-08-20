@@ -122,7 +122,6 @@ input:focus-visible {
   padding: 0 42px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
   border-bottom: 1px solid var(--line);
   position: relative;
   z-index: 5;
@@ -142,9 +141,12 @@ input:focus-visible {
 }
 
 .deck-meta {
+  flex: 1;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 10px;
+  margin-left: clamp(24px, 5vw, 72px);
 }
 
 .deck-meta > span {
@@ -152,7 +154,6 @@ input:focus-visible {
   font-family: var(--mono);
   font-size: 14px;
   letter-spacing: 0.09em;
-  margin-right: 12px;
   text-transform: uppercase;
 }
 
