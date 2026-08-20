@@ -2342,6 +2342,54 @@ function ChooserLab() {
   );
 }
 
+function AgentExtensionVisual({ kind }: { kind: "skills" | "mcp" | "subagents" }) {
+  if (kind === "skills") {
+    return (
+      <div className="agent-extension agent-extension-skills">
+        <div className="agent-extension-file">
+          <span>SKILL.md</span>
+          <strong>Инструкции</strong>
+          <small>ресурсы · скрипты · проверка</small>
+        </div>
+        <b aria-hidden="true">→</b>
+        <div className="agent-extension-result">
+          <span>ПОВТОРЯЕМЫЙ WORKFLOW</span>
+          <strong>Одинаковый подход</strong>
+          <small>для каждого подходящего запроса</small>
+        </div>
+      </div>
+    );
+  }
+
+  if (kind === "mcp") {
+    return (
+      <div className="agent-extension agent-extension-mcp">
+        <div className="agent-extension-node agent-extension-primary"><span>CODEX</span><strong>Агент</strong></div>
+        <b aria-hidden="true">↔</b>
+        <div className="agent-extension-node agent-extension-protocol"><span>ПРОТОКОЛ</span><strong>MCP</strong></div>
+        <b aria-hidden="true">↔</b>
+        <div className="agent-extension-systems">
+          <span>ДАННЫЕ И ДЕЙСТВИЯ</span>
+          <div><strong>Docs</strong><strong>Figma</strong><strong>Browser</strong><strong>Logs</strong></div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="agent-extension agent-extension-subagents">
+      <div className="agent-extension-main"><span>ГЛАВНЫЙ АГЕНТ</span><strong>Делит задачу</strong></div>
+      <b aria-hidden="true">↓</b>
+      <div className="agent-extension-workers">
+        <article><span>01</span><strong>Исследование</strong></article>
+        <article><span>02</span><strong>Тесты</strong></article>
+        <article><span>03</span><strong>Review</strong></article>
+      </div>
+      <div className="agent-extension-summary"><span>↑</span><strong>Сводный результат</strong></div>
+    </div>
+  );
+}
+
 function SetupFlowVisual() {
   return (
     <div className="setup-flow-board">
@@ -3134,6 +3182,9 @@ function Visual({ name }: { name: string }) {
     case "effort-simple": return <EffortVisual taskId="simple" />;
     case "effort-complex": return <EffortVisual taskId="complex" />;
     case "chooser": return <ChooserLab />;
+    case "agent-skills": return <AgentExtensionVisual kind="skills" />;
+    case "agent-mcp": return <AgentExtensionVisual kind="mcp" />;
+    case "agent-subagents": return <AgentExtensionVisual kind="subagents" />;
     case "setup-flow": return <SetupFlowVisual />;
     case "setup-docs": return <SetupDocsVisual />;
     case "setup-plan": return <SetupPlanVisual />;

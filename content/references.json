@@ -418,5 +418,26 @@
     "publisher": "European Commission",
     "year": "2025",
     "url": "https://digital-strategy.ec.europa.eu/en/factpages/general-purpose-ai-obligations-under-ai-act"
+  },
+  {
+    "id": 61,
+    "title": "Build skills",
+    "publisher": "OpenAI",
+    "year": "2026",
+    "url": "https://learn.chatgpt.com/docs/build-skills"
+  },
+  {
+    "id": 62,
+    "title": "Model Context Protocol",
+    "publisher": "OpenAI",
+    "year": "2026",
+    "url": "https://learn.chatgpt.com/docs/extend/mcp?surface=cli"
+  },
+  {
+    "id": 63,
+    "title": "Subagents",
+    "publisher": "OpenAI",
+    "year": "2026",
+    "url": "https://learn.chatgpt.com/docs/agent-configuration/subagents"
   }
 ]

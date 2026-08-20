@@ -79,13 +79,13 @@ test("content is editable Markdown and keeps bonus slides outside the core talk"
   assert.match(bonusMarkdown, /id: transformer-route/);
   assert.match(bonusMarkdown, /id: generation/);
   assert.match(markdown, /brand: LLM \/ AGENTS/);
-  assert.match(generated, /"totalMinutes": 46/);
-  assert.match(generated, /"slideCount": 29/);
+  assert.match(generated, /"totalMinutes": 49/);
+  assert.match(generated, /"slideCount": 32/);
   assert.match(generated, /"id": "learning"/);
   assert.doesNotMatch(generated, /"id": "agent-loop"/);
   assert.match(generated, /"id": "model-lines"/);
   assert.match(generated, /"id": "model-product"/);
-  assert.match(generated, /"id": "model-product"[\s\S]*"id": "harness"[\s\S]*"id": "agent-use-cases"[\s\S]*"id": "retrospective"/);
+  assert.match(generated, /"id": "model-product"[\s\S]*"id": "harness"[\s\S]*"id": "agent-skills"[\s\S]*"id": "agent-mcp"[\s\S]*"id": "agent-subagents"[\s\S]*"id": "agent-use-cases"[\s\S]*"id": "retrospective"/);
   assert.match(generated, /"id": "retrospective"/);
   assert.match(generated, /"id": "capability-artifacts"/);
   assert.match(generated, /"id": "capability-artifacts"[\s\S]*"id": "security-control"[\s\S]*"id": "model-lines"/);
@@ -101,7 +101,7 @@ test("content is editable Markdown and keeps bonus slides outside the core talk"
   assert.doesNotMatch(generated, /"id": "effort-evolution"/);
   assert.match(generated, /"id": "work-future"/);
   assert.match(generated, /"id": "outcome-over-implementation"[\s\S]*"id": "work-future"[\s\S]*"id": "automation-boundary"[\s\S]*"id": "human-ai-complexity"/);
-  assert.match(generated, /"id": "outcome-over-implementation"[\s\S]*?"body": "",[\s\S]*?"notes": "Мем намеренно сталкивает/);
+  assert.match(generated, /"id": "outcome-over-implementation"[\s\S]*?"body": "",[\s\S]*?"notes": "Переходим к заключительной части/);
   assert.doesNotMatch(generated, /"id": "trajectory"/);
   assert.doesNotMatch(generated, /"id": "industry-next"/);
   assert.doesNotMatch(generated, /"id": "skills"/);
@@ -118,7 +118,7 @@ test("content is editable Markdown and keeps bonus slides outside the core talk"
   assert.match(generated, /"id": "transformer-summary"/);
   assert.match(generated, /"id": "kv-cache"/);
   assert.doesNotMatch(generated, /"id": "setup"/);
-  assert.equal(JSON.parse(references).length, 60);
+  assert.equal(JSON.parse(references).length, 63);
   assert.equal(JSON.parse(visuals).training.length, 4);
   assert.equal(JSON.parse(visuals).harness.rows.length, 11);
   assert.equal(JSON.parse(tokenSamples).length, 3);
