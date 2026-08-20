@@ -81,3 +81,13 @@ npm test
 
 Управление в режиме презентации: стрелки, `Page Up` / `Page Down`, пробел;
 `O` открывает обзор, `R` переключает режим чтения.
+
+## Production
+
+Основная публичная версия работает на <https://llm.positroid.tech>.
+
+Push в `main` проверяет проект и публикует контейнер
+`ghcr.io/positron48/llm-agents-presentation:latest`. Flux отслеживает digest
+этого тега в репозитории `devops-time-host` и выполняет rollout в k3s.
+Production-контейнер запускает standalone-сборку vinext на порту `3000`;
+локальный редактор текста в неё не входит.

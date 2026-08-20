@@ -10,7 +10,8 @@ export async function generateMetadata(): Promise<Metadata> {
   const protocol =
     requestHeaders.get("x-forwarded-proto") ??
     (host?.startsWith("localhost") ? "http" : "https");
-  const origin = host ? `${protocol}://${host}` : "http://localhost:3000";
+  const origin = process.env.PUBLIC_SITE_URL?.replace(/\/$/, "") ??
+    (host ? `${protocol}://${host}` : "http://localhost:3000");
   const image = `${origin}/og.png`;
 
   return {

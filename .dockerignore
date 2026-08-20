@@ -1,0 +1,10 @@
+.git
+.github
+.local
+.next
+.wrangler
+dist
+node_modules
+npm-debug.log*
+outputs
+work
