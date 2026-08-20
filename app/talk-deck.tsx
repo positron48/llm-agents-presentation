@@ -1,3 +1,4 @@
+/** @jsxImportSource @/app/i18n */
 "use client";
 
 import {
@@ -16,6 +17,7 @@ import tokenSamples from "@/content/token-samples.json";
 import deepDive from "@/content/transformer-visuals.ru.json";
 import visuals from "@/content/visuals.ru.json";
 import { citationIds, renderMarkdown, type Reference } from "./lib/markdown";
+import { LanguageContext } from "./i18n/context";
 
 type Slide = {
   id: string;
@@ -46,9 +48,20 @@ type TalkDeckProps = {
   };
   initialMode?: "slides" | "read";
   initialSlideId?: string;
+  language: "ru" | "en";
 };
 
 type EditableField = "kicker" | "title" | "subtitle" | "body" | "notes";
+
+function LanguageSwitcher({ language, hrefFor }: { language: "ru" | "en"; hrefFor: (language: "ru" | "en") => string }) {
+  return (
+    <nav className="language-switcher" aria-label="Language">
+      <a className={language === "en" ? "is-active" : ""} href={hrefFor("en")} lang="en">EN</a>
+      <span aria-hidden="true">/</span>
+      <a className={language === "ru" ? "is-active" : ""} href={hrefFor("ru")} lang="ru">RU</a>
+    </nav>
+  );
+}
 
 function htmlToMarkdown(element: HTMLElement) {
   const convert = (node: Node): string => {
@@ -133,8 +146,19 @@ function HeroVisual() {
     <div className="hero-visual">
       {/* eslint-disable-next-line @next/next/no-img-element -- Vinext's local image optimizer returns 500; the static asset is served directly. */}
       <img
+        className="hero-image-ru"
         src={visuals.hero.image}
         alt={visuals.hero.alt}
+        width="1536"
+        height="1024"
+        loading="eager"
+        fetchPriority="high"
+      />
+      {/* eslint-disable-next-line @next/next/no-img-element -- language-specific static cover; see the Russian asset above. */}
+      <img
+        className="hero-image-en"
+        src="/og.en.png"
+        alt="An artificial neuron develops into a neural network, and then into an agent with tools"
         width="1536"
         height="1024"
         loading="eager"
@@ -2803,8 +2827,18 @@ function HumanAiComplexityVisual() {
     <figure className="human-ai-complexity-visual">
       {/* eslint-disable-next-line @next/next/no-img-element -- static presentation asset is served directly. */}
       <img
+        className="localized-image-ru"
         src="/human-ai-complexity.png"
         alt="График роста сложности задач: возможности ИИ растут ступенчато, а человек начинает решать более сложные задачи"
+        width="903"
+        height="655"
+        loading="eager"
+      />
+      {/* eslint-disable-next-line @next/next/no-img-element -- English-localized static presentation asset. */}
+      <img
+        className="localized-image-en"
+        src="/human-ai-complexity.en.png"
+        alt="Chart of growing task complexity: AI capabilities rise in steps while humans move on to more complex tasks"
         width="903"
         height="655"
         loading="eager"
@@ -2818,10 +2852,20 @@ function OutcomeOverImplementationVisual() {
     <figure className="outcome-over-implementation-visual">
       {/* eslint-disable-next-line @next/next/no-img-element -- static presentation asset is served directly. */}
       <img
+        className="localized-image-ru"
         src="/outcome-over-implementation.png"
         alt="Диалог: разработчик рассказывает о сложной реализации, а заказчик просит просто выполнить его заказ"
         width="842"
         height="538"
+        loading="eager"
+      />
+      {/* eslint-disable-next-line @next/next/no-img-element -- English-localized static presentation asset. */}
+      <img
+        className="localized-image-en"
+        src="/outcome-over-implementation.en.png"
+        alt="Dialogue: a developer describes a complex implementation while the customer asks for the order"
+        width="842"
+        height="530"
         loading="eager"
       />
     </figure>
@@ -3249,13 +3293,14 @@ function SourceList({
   );
 }
 
-export default function TalkDeck({
+function TalkDeckContent({
   slides,
   bonusSlides,
   references,
   meta,
   initialMode = "slides",
   initialSlideId,
+  language,
 }: TalkDeckProps) {
   const [mode, setMode] = useState<"slides" | "read">(initialMode);
   // This is deliberately a local drafting aid. Vite builds production bundles
@@ -3291,6 +3336,14 @@ export default function TalkDeck({
     },
     [],
   );
+
+  const languageHref = useCallback((nextLanguage: "ru" | "en") => {
+    const params = new URLSearchParams();
+    if (nextLanguage === "en") params.set("lang", "en");
+    if (mode === "read") params.set("mode", "read");
+    params.set("slide", currentSlideId);
+    return `?${params.toString()}`;
+  }, [currentSlideId, mode]);
 
   const goTo = useCallback(
     (nextIndex: number, track: "core" | "bonus" = isBonus ? "bonus" : "core") => {
@@ -3357,19 +3410,21 @@ export default function TalkDeck({
         track: slide.track === "bonus" ? "bonus" : "core",
         field,
         value,
+        language,
       }),
     });
     if (!response.ok) {
       const payload = await response.json().catch(() => ({})) as { error?: string };
       setSaveError(payload.error ?? "Не удалось сохранить правку");
     }
-  }, [canEdit]);
+  }, [canEdit, language]);
 
   if (mode === "read") {
     return (
       <main className="reading-mode">
         <header className="reading-header">
-          <a className="brand" href="?slide=cover">{meta.brand}</a>
+          <a className="brand" href={languageHref(language).replace(/slide=[^&]*/, "slide=cover")}>{meta.brand}</a>
+          <LanguageSwitcher language={language} hrefFor={languageHref} />
           {canEdit && (
             <button
               type="button"
@@ -3477,6 +3532,7 @@ export default function TalkDeck({
         <header className="deck-header">
           <button className="brand" type="button" onClick={() => goTo(0, "core")}>{meta.brand}</button>
           <div className="deck-meta">
+            <LanguageSwitcher language={language} hrefFor={languageHref} />
             <span>{isBonus ? `Бонус · ${slide.section}` : slide.section}</span>
             <button type="button" onClick={() => setOverview((current) => !current)}>Обзор</button>
             {canEdit && (
@@ -3599,5 +3655,13 @@ export default function TalkDeck({
       )}
       {saveError && <p className="editor-error" role="alert">{saveError}</p>}
     </main>
+  );
+}
+
+export default function TalkDeck(props: TalkDeckProps) {
+  return (
+    <LanguageContext.Provider value={props.language}>
+      <TalkDeckContent {...props} />
+    </LanguageContext.Provider>
   );
 }

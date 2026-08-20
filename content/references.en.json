@@ -1,0 +1,443 @@
+[
+  {
+    "id": 1,
+    "title": "A Logical Calculus of the Ideas Immanent in Nervous Activity",
+    "publisher": "Bulletin of Mathematical Biophysics",
+    "year": "1943",
+    "url": "https://doi.org/10.1007/BF02478259"
+  },
+  {
+    "id": 2,
+    "title": "Attention Is All You Need",
+    "publisher": "arXiv",
+    "year": "2017",
+    "url": "https://arxiv.org/abs/1706.03762"
+  },
+  {
+    "id": 3,
+    "title": "Language Models are Few-Shot Learners",
+    "publisher": "OpenAI",
+    "year": "2020",
+    "url": "https://arxiv.org/abs/2005.14165"
+  },
+  {
+    "id": 4,
+    "title": "Key concepts: Tokens",
+    "publisher": "OpenAI Developers",
+    "year": "2026",
+    "url": "https://developers.openai.com/api/docs/concepts#tokens"
+  },
+  {
+    "id": 5,
+    "title": "Vector embeddings",
+    "publisher": "OpenAI Developers",
+    "year": "2026",
+    "url": "https://developers.openai.com/api/docs/guides/embeddings"
+  },
+  {
+    "id": 6,
+    "title": "Function calling",
+    "publisher": "OpenAI Developers",
+    "year": "2026",
+    "url": "https://developers.openai.com/api/docs/guides/function-calling"
+  },
+  {
+    "id": 7,
+    "title": "Using GPT-5.6",
+    "publisher": "OpenAI Developers",
+    "year": "2026",
+    "url": "https://developers.openai.com/api/docs/guides/latest-model.md"
+  },
+  {
+    "id": 8,
+    "title": "Effort",
+    "publisher": "Claude Platform Docs",
+    "year": "2026",
+    "url": "https://platform.claude.com/docs/en/build-with-claude/effort"
+  },
+  {
+    "id": 9,
+    "title": "Adaptive thinking",
+    "publisher": "Claude Platform Docs",
+    "year": "2026",
+    "url": "https://platform.claude.com/docs/en/build-with-claude/adaptive-thinking"
+  },
+  {
+    "id": 10,
+    "title": "AI achieves silver-medal standard solving IMO problems",
+    "publisher": "Google DeepMind",
+    "year": "2024",
+    "url": "https://deepmind.google/blog/ai-solves-imo-problems-at-silver-medal-level/"
+  },
+  {
+    "id": 11,
+    "title": "Gemini Deep Think achieves gold-medal standard at IMO",
+    "publisher": "Google DeepMind",
+    "year": "2025",
+    "url": "https://deepmind.google/blog/advanced-version-of-gemini-with-deep-think-officially-achieves-gold-medal-standard-at-the-international-mathematical-olympiad/"
+  },
+  {
+    "id": 12,
+    "title": "Kimi K3: Open Frontier Intelligence",
+    "publisher": "Moonshot AI",
+    "year": "2026",
+    "url": "https://www.kimi.com/ja/blog/kimi-k3"
+  },
+  {
+    "id": 13,
+    "title": "Hugging Face model evaluation security incident",
+    "publisher": "OpenAI",
+    "year": "2026",
+    "url": "https://openai.com/index/hugging-face-model-evaluation-security-incident/"
+  },
+  {
+    "id": 14,
+    "title": "Task-Completion Time Horizons of Frontier AI Models",
+    "publisher": "METR",
+    "year": "2026",
+    "url": "https://metr.org/time-horizons/"
+  },
+  {
+    "id": 15,
+    "title": "Generative AI and Jobs: A Refined Global Index",
+    "publisher": "International Labour Organization",
+    "year": "2025",
+    "url": "https://www.ilo.org/publications/generative-ai-and-jobs-refined-global-index-occupational-exposure"
+  },
+  {
+    "id": 16,
+    "title": "The Future of Jobs Report 2025",
+    "publisher": "World Economic Forum",
+    "year": "2025",
+    "url": "https://www.weforum.org/publications/the-future-of-jobs-report-2025/in-full/2-jobs-outlook/"
+  },
+  {
+    "id": 17,
+    "title": "The 2026 AI Index Report",
+    "publisher": "Stanford HAI",
+    "year": "2026",
+    "url": "https://hai.stanford.edu/ai-index/2026-ai-index-report"
+  },
+  {
+    "id": 18,
+    "title": "Estonia announces AI Leap Programme",
+    "publisher": "Office of the President of Estonia",
+    "year": "2025",
+    "url": "https://president.ee/en/media/press-releases/56984-estonia-announces-groundbreaking-national-initiative-ai-leap-programme-bring-ai-tools-all"
+  },
+  {
+    "id": 19,
+    "title": "LLM and level of effort in Claude Code",
+    "publisher": "Habr",
+    "year": "2026",
+    "url": "https://habr.com/ru/articles/1057268/"
+  },
+  {
+    "id": 20,
+    "title": "Training language models to follow instructions with human feedback",
+    "publisher": "OpenAI",
+    "year": "2022",
+    "url": "https://arxiv.org/abs/2203.02155"
+  },
+  {
+    "id": 21,
+    "title": "Toolformer: Language Models Can Teach Themselves to Use Tools",
+    "publisher": "Meta AI",
+    "year": "2023",
+    "url": "https://arxiv.org/abs/2302.04761"
+  },
+  {
+    "id": 22,
+    "title": "LLM and effort in Claude Code: knowing more vs trying harder?",
+    "publisher": "Claude Developers · Lydia Hallie",
+    "year": "2026",
+    "url": "https://x.com/ClaudeDevs/status/2074900291062034618"
+  },
+  {
+    "id": 23,
+    "title": "Anatomy and Physiology: The Neuron, figure 4.19",
+    "publisher": "OpenStax",
+    "year": "2013",
+    "url": "https://openstax.org/books/anatomy-and-physiology/pages/4-5-nervous-tissue-mediates-perception-and-response"
+  },
+  {
+    "id": 24,
+    "title": "RoFormer: Enhanced Transformer with Rotary Position Embedding",
+    "publisher": "arXiv",
+    "year": "2021",
+    "url": "https://arxiv.org/abs/2104.09864"
+  },
+  {
+    "id": 25,
+    "title": "Attention is not Explanation",
+    "publisher": "NAACL · arXiv",
+    "year": "2019",
+    "url": "https://arxiv.org/abs/1902.10186"
+  },
+  {
+    "id": 26,
+    "title": "KV cache strategies",
+    "publisher": "Hugging Face Transformers",
+    "year": "2026",
+    "url": "https://huggingface.co/docs/transformers/kv_cache"
+  },
+  {
+    "id": 27,
+    "title": "Scaled dot product attention",
+    "publisher": "PyTorch Documentation",
+    "year": "2026",
+    "url": "https://docs.pytorch.org/docs/stable/generated/torch.nn.functional.scaled_dot_product_attention"
+  },
+  {
+    "id": 28,
+    "title": "Bloom's Taxonomy",
+    "publisher": "Cornell Center for Teaching Innovation",
+    "year": "2026",
+    "url": "https://teaching.cornell.edu/resource/blooms-taxonomy"
+  },
+  {
+    "id": 29,
+    "title": "Shaping Education for the Future: Generative AI as an evolutionary challenge to humans",
+    "publisher": "Kristina Kallas · Skolriksdag 2025",
+    "year": "2025",
+    "url": "https://www.delegia.com/app/Data/ProjectImages/21185/3.Skolriksdag%202025%20ministri%20ettekanne%205.5.2025.pdf"
+  },
+  {
+    "id": 30,
+    "title": "Generative AI as an evolutionary challenge to humans",
+    "publisher": "Kristina Kallas · YouTube",
+    "year": "2025",
+    "url": "https://www.youtube.com/watch?v=44St9MoJU0E"
+  },
+  {
+    "id": 31,
+    "title": "Computers and the Future of Skill Demand",
+    "publisher": "OECD",
+    "year": "2017",
+    "url": "https://www.oecd.org/en/publications/computers-and-the-future-of-skill-demand_9789264284395-en.html"
+  },
+  {
+    "id": 32,
+    "title": "GPT-5.6: Frontier intelligence that scales with your ambition",
+    "publisher": "OpenAI",
+    "year": "2026",
+    "url": "https://openai.com/index/gpt-5-6/"
+  },
+  {
+    "id": 33,
+    "title": "Gemini 3.5: frontier intelligence with action",
+    "publisher": "Google",
+    "year": "2026",
+    "url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-5/"
+  },
+  {
+    "id": 34,
+    "title": "Introducing Claude Opus 4.6",
+    "publisher": "Anthropic",
+    "year": "2026",
+    "url": "https://www.anthropic.com/news/claude-opus-4-6"
+  },
+  {
+    "id": 35,
+    "title": "The Llama 4 herd",
+    "publisher": "Meta AI",
+    "year": "2025",
+    "url": "https://ai.meta.com/blog/llama-4-multimodal-intelligence/"
+  },
+  {
+    "id": 36,
+    "title": "Qwen3: Think Deeper, Act Faster",
+    "publisher": "Qwen",
+    "year": "2025",
+    "url": "https://qwenlm.github.io/blog/qwen3/"
+  },
+  {
+    "id": 37,
+    "title": "DeepSeek API Change Log",
+    "publisher": "DeepSeek",
+    "year": "2026",
+    "url": "https://api-docs.deepseek.com/updates/"
+  },
+  {
+    "id": 38,
+    "title": "Introducing Grok 4.5",
+    "publisher": "xAI",
+    "year": "2026",
+    "url": "https://x.ai/news/grok-4-5"
+  },
+  {
+    "id": 39,
+    "title": "Introducing Mistral 3",
+    "publisher": "Mistral AI",
+    "year": "2025",
+    "url": "https://mistral.ai/news/mistral-3/"
+  },
+  {
+    "id": 40,
+    "title": "Introducing gpt-oss",
+    "publisher": "OpenAI",
+    "year": "2025",
+    "url": "https://openai.com/index/introducing-gpt-oss/"
+  },
+  {
+    "id": 41,
+    "title": "Introducing ChatGPT Images 2.0",
+    "publisher": "OpenAI",
+    "year": "2026",
+    "url": "https://openai.com/index/introducing-chatgpt-images-2-0/"
+  },
+  {
+    "id": 42,
+    "title": "Sora 2 System Card",
+    "publisher": "OpenAI",
+    "year": "2025",
+    "url": "https://cdn.openai.com/pdf/50d5973c-c4ff-4c2d-986f-c72b5d0ff069/sora_2_system_card.pdf"
+  },
+  {
+    "id": 43,
+    "title": "Introducing Stable Fast 3D",
+    "publisher": "Stability AI",
+    "year": "2024",
+    "url": "https://stability.ai/news/introducing-stable-fast-3d"
+  },
+  {
+    "id": 44,
+    "title": "Realtime and audio",
+    "publisher": "OpenAI Developers",
+    "year": "2026",
+    "url": "https://developers.openai.com/api/docs/guides/realtime"
+  },
+  {
+    "id": 45,
+    "title": "Using ChatGPT",
+    "publisher": "OpenAI Academy",
+    "year": "2026",
+    "url": "https://openai.com/academy/using-chatgpt/"
+  },
+  {
+    "id": 46,
+    "title": "OpenAI for data analysis",
+    "publisher": "OpenAI",
+    "year": "2026",
+    "url": "https://openai.com/solutions/use-case/data-analysis/"
+  },
+  {
+    "id": 47,
+    "title": "Scaling long-running autonomous coding",
+    "publisher": "Cursor",
+    "year": "2026",
+    "url": "https://cursor.com/blog/scaling-agents"
+  },
+  {
+    "id": 48,
+    "title": "Building a C compiler with a team of parallel Claudes",
+    "publisher": "Anthropic",
+    "year": "2026",
+    "url": "https://www.anthropic.com/engineering/building-c-compiler"
+  },
+  {
+    "id": 49,
+    "title": "Rewriting Bun in Rust",
+    "publisher": "Bun",
+    "year": "2026",
+    "url": "https://bun.com/blog/bun-in-rust"
+  },
+  {
+    "id": 50,
+    "title": "Evaluating frontier AI R&D capabilities of language model agents against human experts",
+    "publisher": "METR",
+    "year": "2024",
+    "url": "https://metr.org/blog/2024-11-22-evaluating-r-d-capabilities-of-llms/"
+  },
+  {
+    "id": 51,
+    "title": "Build agents that run automatically",
+    "publisher": "Cursor",
+    "year": "2026",
+    "url": "https://cursor.com/blog/automations"
+  },
+  {
+    "id": 52,
+    "title": "Introducing GitHub Copilot: your AI pair programmer",
+    "publisher": "GitHub",
+    "year": "2021",
+    "url": "https://github.blog/news-insights/product-news/introducing-github-copilot-ai-pair-programmer/"
+  },
+  {
+    "id": 53,
+    "title": "Introducing ChatGPT",
+    "publisher": "OpenAI",
+    "year": "2022",
+    "url": "https://openai.com/index/chatgpt/"
+  },
+  {
+    "id": 54,
+    "title": "Hello GPT-4o",
+    "publisher": "OpenAI",
+    "year": "2024",
+    "url": "https://openai.com/index/hello-gpt-4o/"
+  },
+  {
+    "id": 55,
+    "title": "Learning to reason with LLMs",
+    "publisher": "OpenAI",
+    "year": "2024",
+    "url": "https://openai.com/index/learning-to-reason-with-llms/"
+  },
+  {
+    "id": 56,
+    "title": "AlphaGeometry: An Olympiad-level AI system for geometry",
+    "publisher": "Google DeepMind",
+    "year": "2024",
+    "url": "https://deepmind.google/blog/alphageometry-an-olympiad-level-ai-system-for-geometry/"
+  },
+  {
+    "id": 57,
+    "title": "Claude 3.7 Sonnet and Claude Code",
+    "publisher": "Anthropic",
+    "year": "2025",
+    "url": "https://www.anthropic.com/news/claude-3-7-sonnet"
+  },
+  {
+    "id": 58,
+    "title": "Simplified Pricing, Background Agent and Refreshed Inline Edit",
+    "publisher": "Cursor",
+    "year": "2025",
+    "url": "https://cursor.com/changelog/0-50"
+  },
+  {
+    "id": 59,
+    "title": "Investigating three real-world incidents in our cybersecurity evaluations",
+    "publisher": "Anthropic",
+    "year": "2026",
+    "url": "https://www.anthropic.com/news/investigating-incidents-cybersecurity-evals"
+  },
+  {
+    "id": 60,
+    "title": "General-purpose AI obligations under the AI Act",
+    "publisher": "European Commission",
+    "year": "2025",
+    "url": "https://digital-strategy.ec.europa.eu/en/factpages/general-purpose-ai-obligations-under-ai-act"
+  },
+  {
+    "id": 61,
+    "title": "Build skills",
+    "publisher": "OpenAI",
+    "year": "2026",
+    "url": "https://learn.chatgpt.com/docs/build-skills"
+  },
+  {
+    "id": 62,
+    "title": "Model Context Protocol",
+    "publisher": "OpenAI",
+    "year": "2026",
+    "url": "https://learn.chatgpt.com/docs/extend/mcp?surface=cli"
+  },
+  {
+    "id": 63,
+    "title": "Subagents",
+    "publisher": "OpenAI",
+    "year": "2026",
+    "url": "https://learn.chatgpt.com/docs/agent-configuration/subagents"
+  }
+]

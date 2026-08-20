@@ -31,6 +31,32 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+.language-switcher {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+}
+
+.language-switcher a {
+  color: inherit;
+  opacity: 0.48;
+  text-decoration: none;
+}
+
+.language-switcher a.is-active {
+  opacity: 1;
+  font-weight: 800;
+}
+
+.hero-visual .hero-image-en {
+  display: none;
+}
+
+html[lang="en"] .hero-visual .hero-image-ru { display: none; }
+html[lang="en"] .hero-visual .hero-image-en { display: block; }
+
 button,
 select,
 input {
@@ -6037,6 +6063,21 @@ input:focus-visible {
   height: auto;
 }
 
+.human-ai-complexity-visual .localized-image-en,
+.outcome-over-implementation-visual .localized-image-en {
+  display: none;
+}
+
+html[lang="en"] .human-ai-complexity-visual .localized-image-ru,
+html[lang="en"] .outcome-over-implementation-visual .localized-image-ru {
+  display: none;
+}
+
+html[lang="en"] .human-ai-complexity-visual .localized-image-en,
+html[lang="en"] .outcome-over-implementation-visual .localized-image-en {
+  display: block;
+}
+
 .capabilities-today-board > footer,
 .modalities-board > footer,
 .effort-evolution-board > footer {
@@ -9112,6 +9153,40 @@ input:focus-visible {
   line-height: 1.4;
 }
 
+@media (max-width: 1300px) {
+  .deep-lookup {
+    grid-template-columns: minmax(105px, 0.55fr) 22px minmax(120px, 0.7fr) 22px minmax(280px, 1.7fr);
+    gap: 12px;
+  }
+
+  .deep-lookup .deep-vector i {
+    min-width: 0;
+    padding-inline: 3px;
+    font-size: 11px;
+  }
+
+  .deep-qkv {
+    grid-template-columns: minmax(190px, 0.75fr) 56px minmax(340px, 1.4fr);
+    gap: 12px;
+  }
+
+  .qkv-source .deep-vector i {
+    min-width: 0;
+    padding-inline: 2px;
+    font-size: 10px;
+  }
+
+  .deep-layernorm {
+    grid-template-columns: minmax(260px, 1fr) 100px minmax(260px, 1fr);
+    gap: 12px;
+  }
+
+  .deep-mlp-inside {
+    grid-template-columns: minmax(100px, 0.55fr) 32px minmax(300px, 1.7fr) 32px minmax(100px, 0.55fr);
+    gap: 10px;
+  }
+}
+
 /* Finale */
 
 .final-formula {
@@ -10499,4 +10574,12 @@ input:focus-visible {
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
   }
+}
+
+html[lang="en"] .editable-subtitle:empty::before {
+  content: "Add subtitle";
+}
+
+html[lang="en"] .reading-slide .speaker-copy::before {
+  content: "Speaker notes";
 }

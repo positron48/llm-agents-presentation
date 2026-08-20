@@ -41,6 +41,21 @@ test("server-renders the presentation shell", async () => {
   assert.doesNotMatch(html, /codex-preview|react-loading-skeleton/i);
 });
 
+test("server-renders English content and the localized cover", async () => {
+  const response = await render("/?lang=en");
+  assert.equal(response.status, 200);
+  const html = await response.text();
+  assert.match(html, /<title>From neuron to agent<\/title>/i);
+  assert.match(html, /From neuron to agent/);
+  assert.match(html, /src="\/og\.en\.png"/);
+  assert.match(html, /href="\?slide=cover"[^>]*lang="ru"/);
+
+  const readingResponse = await render("/?lang=en&mode=read");
+  const readingHtml = await readingResponse.text();
+  assert.match(readingHtml, /src="\/outcome-over-implementation\.en\.png"/);
+  assert.match(readingHtml, /src="\/human-ai-complexity\.en\.png"/);
+});
+
 test("client includes the reading mode, notes and bibliography", async () => {
   const [source, viteConfig] = await Promise.all([
     readFile(new URL("../app/talk-deck.tsx", import.meta.url), "utf8"),
@@ -55,6 +70,8 @@ test("client includes the reading mode, notes and bibliography", async () => {
   assert.match(source, /chrome-reveal/);
   assert.match(source, /slide\.visual !== "hero"/);
   assert.match(source, /process\.env\.NODE_ENV !== "production"/);
+  assert.match(source, /LanguageContext\.Provider/);
+  assert.doesNotMatch(source, /MutationObserver|localizeElement/);
   assert.match(source, /contentEditable=\{editing\}/);
   assert.match(source, /slide\.subtitle \|\| isEditing/);
   assert.match(source, /editable-subtitle/);
@@ -64,20 +81,28 @@ test("client includes the reading mode, notes and bibliography", async () => {
 });
 
 test("content is editable Markdown and keeps bonus slides outside the core talk", async () => {
-  const [markdown, bonusMarkdown, generated, generator, references, visuals, tokenSamples] = await Promise.all([
+  const [markdown, englishMarkdown, bonusMarkdown, englishBonusMarkdown, generated, generator, references, englishReferences, visuals, tokenSamples, uiEnglish] = await Promise.all([
     readFile(new URL("../content/talk.ru.md", import.meta.url), "utf8"),
+    readFile(new URL("../content/talk.en.md", import.meta.url), "utf8"),
     readFile(new URL("../content/bonus-transformer.ru.md", import.meta.url), "utf8"),
+    readFile(new URL("../content/bonus-transformer.en.md", import.meta.url), "utf8"),
     readFile(new URL("../content/generated.ts", import.meta.url), "utf8"),
     readFile(new URL("../scripts/build-content.mjs", import.meta.url), "utf8"),
     readFile(new URL("../content/references.json", import.meta.url), "utf8"),
+    readFile(new URL("../content/references.en.json", import.meta.url), "utf8"),
     readFile(new URL("../content/visuals.ru.json", import.meta.url), "utf8"),
     readFile(new URL("../content/token-samples.ru.json", import.meta.url), "utf8"),
+    readFile(new URL("../content/ui.en.json", import.meta.url), "utf8"),
   ]);
 
   assert.match(markdown, /<!-- notes -->/);
   assert.doesNotMatch(generator, /\["id", "section", "title", "visual", "minutes"\]/);
   assert.match(bonusMarkdown, /id: transformer-route/);
   assert.match(bonusMarkdown, /id: generation/);
+  assert.match(englishMarkdown, /title: From neuron to agent/);
+  assert.match(englishBonusMarkdown, /id: generation/);
+  assert.doesNotMatch(englishMarkdown, /[А-Яа-яЁё]/);
+  assert.doesNotMatch(englishBonusMarkdown, /[А-Яа-яЁё]/);
   assert.match(markdown, /brand: LLM \/ AGENTS/);
   assert.match(generated, /"totalMinutes": 49/);
   assert.match(generated, /"slideCount": 31/);
@@ -120,6 +145,8 @@ test("content is editable Markdown and keeps bonus slides outside the core talk"
   assert.match(generated, /"id": "kv-cache"/);
   assert.doesNotMatch(generated, /"id": "setup"/);
   assert.equal(JSON.parse(references).length, 63);
+  assert.equal(JSON.parse(englishReferences).length, 63);
+  assert.equal(JSON.parse(uiEnglish).Русский, "Russian");
   assert.equal(JSON.parse(visuals).training.length, 4);
   assert.equal(JSON.parse(visuals).harness.rows.length, 10);
   assert.equal(JSON.parse(tokenSamples).length, 3);

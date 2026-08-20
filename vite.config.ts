@@ -72,15 +72,17 @@ function localTalkEditor(): Plugin {
             track?: "core" | "bonus";
             field?: EditableField;
             value?: string;
+            language?: "ru" | "en";
           };
           if (!payload.slideId || !payload.field || typeof payload.value !== "string") {
             throw new Error("slideId, field and value are required");
           }
           if (payload.value.length > 100_000) throw new Error("Text is too long");
 
+          const language = payload.language === "en" ? "en" : "ru";
           const filename = payload.track === "bonus"
-            ? "bonus-transformer.ru.md"
-            : "talk.ru.md";
+            ? `bonus-transformer.${language}.md`
+            : `talk.${language}.md`;
           const sourcePath = path.join(projectRoot, "content", filename);
           const source = await readFile(sourcePath, "utf8");
           await writeFile(
