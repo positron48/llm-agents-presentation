@@ -3339,7 +3339,7 @@ function TalkDeckContent({
 
   const languageHref = useCallback((nextLanguage: "ru" | "en") => {
     const params = new URLSearchParams();
-    if (nextLanguage === "en") params.set("lang", "en");
+    params.set("lang", nextLanguage);
     if (mode === "read") params.set("mode", "read");
     params.set("slide", currentSlideId);
     return `?${params.toString()}`;

@@ -2,14 +2,14 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 
-async function render(path = "/") {
+async function render(path = "/", requestHeaders = {}) {
   const workerUrl = new URL("../dist/server/index.js", import.meta.url);
   workerUrl.searchParams.set("test", `${process.pid}-${Date.now()}`);
   const { default: worker } = await import(workerUrl.href);
 
   return worker.fetch(
     new Request(`http://localhost${path}`, {
-      headers: { accept: "text/html", host: "localhost" },
+      headers: { accept: "text/html", host: "localhost", ...requestHeaders },
     }),
     {
       ASSETS: {
@@ -24,7 +24,7 @@ async function render(path = "/") {
 }
 
 test("server-renders the presentation shell", async () => {
-  const response = await render();
+  const response = await render("/", { "accept-language": "ru-RU,ru;q=0.9,en;q=0.8" });
   assert.equal(response.status, 200);
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
 
@@ -48,12 +48,23 @@ test("server-renders English content and the localized cover", async () => {
   assert.match(html, /<title>From neuron to agent<\/title>/i);
   assert.match(html, /From neuron to agent/);
   assert.match(html, /src="\/og\.en\.png"/);
-  assert.match(html, /href="\?slide=cover"[^>]*lang="ru"/);
+  assert.match(html, /href="\?lang=ru&amp;slide=cover"[^>]*lang="ru"/);
 
   const readingResponse = await render("/?lang=en&mode=read");
   const readingHtml = await readingResponse.text();
   assert.match(readingHtml, /src="\/outcome-over-implementation\.en\.png"/);
   assert.match(readingHtml, /src="\/human-ai-complexity\.en\.png"/);
+});
+
+test("selects the language from Accept-Language unless the URL overrides it", async () => {
+  const russianResponse = await render("/", { "accept-language": "en;q=0.7,ru-RU;q=0.9" });
+  assert.match(await russianResponse.text(), /<title>От нейрона к агенту<\/title>/i);
+
+  const englishResponse = await render("/", { "accept-language": "de-DE,de;q=0.9" });
+  assert.match(await englishResponse.text(), /<title>From neuron to agent<\/title>/i);
+
+  const explicitRussianResponse = await render("/?lang=ru", { "accept-language": "en-US,en;q=0.9" });
+  assert.match(await explicitRussianResponse.text(), /<title>От нейрона к агенту<\/title>/i);
 });
 
 test("client includes the reading mode, notes and bibliography", async () => {

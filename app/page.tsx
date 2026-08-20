@@ -2,6 +2,7 @@ import TalkDeck from "./talk-deck";
 import type { Metadata } from "next";
 import { headers } from "next/headers";
 import { contentByLanguage } from "@/content/generated";
+import { resolveLanguage } from "./i18n/language";
 
 type PageParams = { mode?: string; slide?: string; lang?: string };
 
@@ -10,9 +11,10 @@ export async function generateMetadata({
 }: {
   searchParams: Promise<PageParams>;
 }): Promise<Metadata> {
-  const language = (await searchParams).lang === "en" ? "en" : "ru";
-  const { talkMeta } = contentByLanguage[language];
+  const params = await searchParams;
   const requestHeaders = await headers();
+  const language = resolveLanguage(params.lang, requestHeaders.get("accept-language"));
+  const { talkMeta } = contentByLanguage[language];
   const host = requestHeaders.get("x-forwarded-host") ?? requestHeaders.get("host");
   const protocol = requestHeaders.get("x-forwarded-proto") ?? (host?.startsWith("localhost") ? "http" : "https");
   const origin = process.env.PUBLIC_SITE_URL?.replace(/\/$/, "") ?? (host ? `${protocol}://${host}` : "http://localhost:3000");
@@ -42,7 +44,8 @@ export default async function Home({
   searchParams: Promise<PageParams>;
 }) {
   const params = await searchParams;
-  const language = params.lang === "en" ? "en" : "ru";
+  const requestHeaders = await headers();
+  const language = resolveLanguage(params.lang, requestHeaders.get("accept-language"));
   const { slides, bonusSlides, references, talkMeta } = contentByLanguage[language];
 
   return (
