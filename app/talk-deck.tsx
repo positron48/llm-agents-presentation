@@ -2029,6 +2029,26 @@ function HarnessVisual() {
   );
 }
 
+function AgentSearchVisual() {
+  const search = visuals.agentSearch;
+
+  return (
+    <div className="agent-search-board" role="img" aria-label="Как агент ищет информацию в репозитории">
+      <header>{search.lead}</header>
+      <div className="agent-search-list">
+        {search.examples.map((example, index) => (
+          <article key={example.label}>
+            <span>{String(index + 1).padStart(2, "0")} · {example.label}</span>
+            <code>{example.query}</code>
+            <small>{example.note}</small>
+          </article>
+        ))}
+      </div>
+      <footer>{search.footnote}</footer>
+    </div>
+  );
+}
+
 type EffortTask = (typeof visuals.effort.tasks)[keyof typeof visuals.effort.tasks];
 type EffortModel = EffortTask["models"][number];
 
@@ -3172,6 +3192,7 @@ function Visual({ name }: { name: string }) {
     case "tools": return <ToolsVisual />;
     case "chat-tools": return <ChatToolsVisual />;
     case "harness": return <HarnessVisual />;
+    case "agent-search": return <AgentSearchVisual />;
     case "agent-loop": return <AgentLoopVisual />;
     case "agent-use-cases": return <AgentUseCasesVisual />;
     case "non-code-agent": return <NonCodeAgentVisual />;
