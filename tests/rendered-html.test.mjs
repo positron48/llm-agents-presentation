@@ -83,6 +83,7 @@ test("client includes the reading mode, notes and bibliography", async () => {
   assert.match(source, /slide\.visual !== "hero"/);
   assert.match(source, /process\.env\.NODE_ENV !== "production"/);
   assert.match(source, /LanguageContext\.Provider/);
+  assert.match(source, /bonus-route-cta/);
   assert.doesNotMatch(source, /MutationObserver|localizeElement/);
   assert.match(source, /contentEditable=\{editing\}/);
   assert.match(source, /slide\.subtitle \|\| isEditing/);

@@ -3586,6 +3586,12 @@ function TalkDeckContent({
           </div>
         )}
         <div className="slide-visual"><Visual name={slide.visual} /></div>
+        {!isBonus && currentIndex === slides.length - 1 && bonusSlides.length > 0 && (
+          <button className="bonus-route-cta" type="button" onClick={() => goTo(0, "bonus")}>
+            <span>Бонус: как Transformer создаёт следующий токен</span>
+            <strong aria-hidden="true">→ B01</strong>
+          </button>
+        )}
       </article>
       <div className="slide-reference" aria-label={`Номер текущего слайда: ${slideNumber}`}>
         <span>{slideNumber}</span>
