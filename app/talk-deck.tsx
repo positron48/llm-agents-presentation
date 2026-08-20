@@ -3421,23 +3421,35 @@ function TalkDeckContent({
 
   if (mode === "read") {
     return (
-      <main className="reading-mode">
-        <header className="reading-header">
-          <a className="brand" href={languageHref(language).replace(/slide=[^&]*/, "slide=cover")}>{meta.brand}</a>
-          <LanguageSwitcher language={language} hrefFor={languageHref} />
-          {canEdit && (
-            <button
-              type="button"
-              className={isEditing ? "is-active" : ""}
-              onClick={() => setIsEditing((current) => !current)}
-              aria-pressed={isEditing}
-              title="Локальная правка не сохраняется и сбрасывается после перезагрузки"
-            >
-              {isEditing ? "Закончить правку" : "Редактировать текст"}
-            </button>
-          )}
-          <button type="button" onClick={toggleMode}>Режим презентации</button>
-        </header>
+      <main className={`reading-mode ${chromeVisible ? "" : "is-chrome-hidden"}`}>
+        {chromeVisible ? (
+          <header className="reading-header">
+            <a className="brand" href={languageHref(language).replace(/slide=[^&]*/, "slide=cover")}>{meta.brand}</a>
+            <LanguageSwitcher language={language} hrefFor={languageHref} />
+            {canEdit && (
+              <button
+                type="button"
+                className={isEditing ? "is-active" : ""}
+                onClick={() => setIsEditing((current) => !current)}
+                aria-pressed={isEditing}
+                title="Локальная правка не сохраняется и сбрасывается после перезагрузки"
+              >
+                {isEditing ? "Закончить правку" : "Редактировать текст"}
+              </button>
+            )}
+            <button type="button" onClick={toggleMode}>Режим презентации</button>
+            <button type="button" onClick={() => setChromeVisible(false)}>Скрыть панели</button>
+          </header>
+        ) : (
+          <button
+            className="chrome-reveal"
+            type="button"
+            onClick={() => setChromeVisible(true)}
+            title="Показать верхнюю панель"
+          >
+            Показать панели <kbd>H</kbd>
+          </button>
+        )}
         <div className={`editing-surface ${isEditing ? "is-editing" : ""}`}>
           <section className="reading-hero">
             <span>{meta.kicker} · {meta.totalMinutes} минут · {slides.length} слайдов</span>

@@ -54,6 +54,7 @@ test("server-renders English content and the localized cover", async () => {
   const readingHtml = await readingResponse.text();
   assert.match(readingHtml, /src="\/outcome-over-implementation\.en\.png"/);
   assert.match(readingHtml, /src="\/human-ai-complexity\.en\.png"/);
+  assert.match(readingHtml, /Hide panels/);
 });
 
 test("selects the language from Accept-Language unless the URL overrides it", async () => {
