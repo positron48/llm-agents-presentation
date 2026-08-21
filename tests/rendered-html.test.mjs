@@ -165,9 +165,10 @@ test("content is editable Markdown and keeps bonus slides outside the core talk"
   assert.equal(JSON.parse(references).length, 63);
   assert.equal(JSON.parse(englishReferences).length, 63);
   assert.equal(JSON.parse(uiEnglish).Русский, "Russian");
-  assert.equal(JSON.parse(uiEnglish)["Таск трекер"], "Task tracker");
+  assert.equal(JSON.parse(uiEnglish)["таск трекер"], "Task tracker");
   assert.equal(JSON.parse(uiEnglish)["Выбираю задачу"], "Choose a task");
-  assert.match(visuals, /"title": "Выбираю задачу", "note": "Таск трекер"/);
+  assert.equal(JSON.parse(uiEnglish).Вспоминать, "Remember");
+  assert.match(visuals, /"title": "Выбираю задачу", "note": "таск трекер"/);
   assert.doesNotMatch(`${markdown}\n${englishMarkdown}\n${visuals}`, /Planka/i);
   assert.equal(JSON.parse(visuals).training.length, 4);
   assert.equal(JSON.parse(visuals).harness.rows.length, 10);

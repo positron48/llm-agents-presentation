@@ -1,5 +1,5 @@
 {
-  "Таск трекер": "Task tracker",
+  "таск трекер": "Task tracker",
   "Выбираю задачу": "Choose a task",
   ". Нажмите, чтобы изменить": ". Click to change",
   "Сеть XOR: два входа, два нейрона скрытого слоя и один выходной нейрон": "XOR network: two inputs, two hidden layer neurons and one output neuron",
@@ -550,7 +550,7 @@
   "АГЕНТ ИСПОЛНЯЕТ": "AGENT EXECUTES",
   "Понимать": "Understand",
   "пересказать · классифицировать · перевести": "retell · classify · translate",
-  "Вспоминать": "remember",
+  "Вспоминать": "Remember",
   "найти · перенести · заполнить · воспроизвести": "find · move · fill · play",
   "АВТОМАТИЗИРУЕТСЯ ПЕРВОЙ": "TO BE AUTOMATED FIRST",
   "ЗАДАЧУ ЗАЩИЩАЕТ НЕ НАЗВАНИЕ ПРОФЕССИИ, А": "THE TASK IS NOT PROTECTED BY THE NAME OF THE PROFESSION, BUT",
