@@ -69,9 +69,10 @@ test("selects the language from Accept-Language unless the URL overrides it", as
 });
 
 test("client includes the reading mode, notes and bibliography", async () => {
-  const [source, viteConfig] = await Promise.all([
+  const [source, viteConfig, styles] = await Promise.all([
     readFile(new URL("../app/talk-deck.tsx", import.meta.url), "utf8"),
     readFile(new URL("../vite.config.ts", import.meta.url), "utf8"),
+    readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
   ]);
 
   assert.match(source, /meta\.kicker/);
@@ -85,6 +86,13 @@ test("client includes the reading mode, notes and bibliography", async () => {
   assert.match(source, /event\.key === "ArrowUp"/);
   assert.match(source, /event\.key === " " && !target\?\.matches\("button"\)/);
   assert.match(source, /chrome-reveal/);
+  assert.match(source, /interactiveVisuals = new Set/);
+  assert.match(source, /<InteractiveMarker withLabel \/>/);
+  assert.match(source, /interactiveVisuals\.has\(candidate\.visual\)/);
+  assert.match(styles, /\.slide-deep-route \.deep-route-track strong \{[\s\S]*font-size: 10px;[\s\S]*white-space: nowrap;/);
+  assert.match(styles, /\.residual-branch b:last-child::before \{[\s\S]*height: 176px;/);
+  assert.match(styles, /\.stream-line i \{[\s\S]*grid-column: 1 \/ -1;/);
+  assert.match(styles, /\.stream-blocks article::before \{[\s\S]*height: 185px;/);
   assert.match(source, /slide\.visual !== "hero"/);
   assert.match(source, /process\.env\.NODE_ENV !== "production"/);
   assert.match(source, /LanguageContext\.Provider/);
@@ -122,6 +130,7 @@ test("content is editable Markdown and keeps bonus slides outside the core talk"
   assert.doesNotMatch(englishMarkdown, /[А-Яа-яЁё]/);
   assert.doesNotMatch(englishBonusMarkdown, /[А-Яа-яЁё]/);
   assert.match(markdown, /brand: LLM \/ AGENTS/);
+  assert.match(uiEnglish, /"Интерактив": "Interactive"/);
   assert.match(generated, /"totalMinutes": 49/);
   assert.match(generated, /"slideCount": 31/);
   assert.match(generated, /"id": "learning"/);
@@ -145,7 +154,7 @@ test("content is editable Markdown and keeps bonus slides outside the core talk"
   assert.doesNotMatch(generated, /"id": "effort-evolution"/);
   assert.match(generated, /"id": "work-future"/);
   assert.match(generated, /"id": "setup-plan"[\s\S]*"id": "agent-search"[\s\S]*"id": "outcome-over-implementation"[\s\S]*"id": "work-future"[\s\S]*"id": "automation-boundary"[\s\S]*"id": "human-ai-complexity"/);
-  assert.match(generated, /"id": "outcome-over-implementation"[\s\S]*?"body": "",[\s\S]*?"notes": "Переходим к заключительной части/);
+  assert.match(generated, /"id": "outcome-over-implementation"[\s\S]*?"body": "",[\s\S]*?"notes": "В заключительной части поговорим/);
   assert.doesNotMatch(generated, /"id": "trajectory"/);
   assert.doesNotMatch(generated, /"id": "industry-next"/);
   assert.doesNotMatch(generated, /"id": "skills"/);

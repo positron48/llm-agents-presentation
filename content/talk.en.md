@@ -14,9 +14,7 @@ Let's get under the hood and figure out where the model ends and the system arou
 
 <!-- notes -->
 
-Hello everyone! Today we will look at what neural networks are using the example of Transformer and modern LLMs, how they work and how they create agents capable of calling tools and writing code.
-
-Let's start from the most basic level - a single biological cell. Then we will assemble from this idea an artificial neuron, a small network and a language model. After that, let’s move on to agents and see what capabilities such systems already have.
+Hello everyone. Today we will talk about agents, LLMs, and neural networks: how they work, how models have evolved, and what modern agents can already do. We will start with a neuron, then cover tokens, context, and the Transformer. After that we will move to the harness, skills, MCP, model choice, my workflow, and the future of automation.
 
 ===
 ---
@@ -33,11 +31,7 @@ An artificial neuron borrows this general idea, but does not attempt to accurate
 
 <!-- notes -->
 
-Let's start with a biological neuron. From the school biology course we remember that the brain consists of nerve cells connected to each other in a huge network. At the same time, an individual cell has a relatively simple structure.
-
-A neuron has many inputs - dendrites, through which signals from other cells arrive - and one output, an axon, which transmits the impulse further. All incoming influences accumulate in the cell body. When their sum exceeds a certain threshold, the neuron produces a single output pulse.
-
-Artificial neural networks borrow this general design: many inputs, signal pooling, thresholding, and one output. This is a mathematical analogy, not an attempt to replicate biology exactly.
+The artificial neuron was inspired by a biological cell. A neuron has many input dendrites. Signals accumulate in the cell body, and when a threshold is crossed, an impulse travels through the axon to other cells. An artificial neuron borrows this general pattern—multiple inputs, signal aggregation, a threshold, and one output—but it is not a precise simulation of the brain.
 
 ===
 ---
@@ -57,17 +51,7 @@ The step function produces `0` if `z < 0`, and `1` if `z ≥ 0`. So one can emul
 
 <!-- notes -->
 
-An artificial neuron is a mathematical abstraction over a biological one. It also has multiple inputs, one output, and a function that detects when the output signal changes.
-
-For clarity, everything is represented here in binary form: each input is equal to zero or one, and the step function returns zero or one. Real networks typically use real values ​​and more complex activation functions, but the principle remains the same.
-
-Each input has its own weight. The input is multiplied by this coefficient, then all products are added, and a separate constant is added to the sum - `bias`. The activation function then compares the result with the threshold.
-
-Almost all basic Boolean logic can be shown on one neuron. For `AND`, the output becomes one only when both inputs are active. For `OR`, any of them is enough: the threshold changes, but the scheme itself remains the same. In `NOT`, a negative weight inverts the input signal.
-
-With `XOR`, one neuron is no longer enough, because a unit is only needed for non-matching inputs. Add a hidden layer: one neuron calculates `OR`, another calculates `AND`, and the third combines their results. If only one input is active, `OR` gives the desired signal. If both are active, the result of `AND` is subtracted and the output is zero again.
-
-This is how a more complex function is formed from several simple elements. Here the coefficients are set manually so that the mechanics can be seen. During training, the network itself selects weights and `bias` for examples.
+An artificial neuron multiplies every input by its weight, adds the results and a bias, then applies a threshold function. One neuron can implement AND, OR, and NOT. XOR requires a network: one neuron computes OR, another AND, and a third combines them. Here the coefficients are set manually; during training, the network learns them.
 
 ===
 ---
@@ -88,13 +72,7 @@ For scale: GPT‑3 has 175 billion parameters [3].
 
 <!-- notes -->
 
-Now let's complicate the task a little. Instead of a Boolean operation, let's try to determine a number from a set of pixels. There are only 15 values ​​at the input - an image of size 3x5. Each pixel becomes a separate network input.
-
-Next comes the hidden layer, and the output contains ten neurons - one for each digit from zero to nine. This design is called a multilayer perceptron, or MLP. We will later see a similar fully connected block inside Transformer.
-
-Each input is connected to all the neurons in the hidden layer, and each hidden neuron is connected to all the outputs. Therefore, each connection has its own weight. The output is not one hard answer, but a distribution of probabilities: for example, the network can be most confident in one, but leave a small probability for other numbers.
-
-Even this toy model already has 634 trainable parameters: 600 connection weights and 34 `bias`. For now, let’s just fix the scale - then we’ll talk about billions and trillions of such coefficients.
+Now we scale the idea and recognize a digit from a 3-by-5 image with 15 pixels. A hidden layer sits in the middle, and the output has ten neurons, one per digit. The network returns a probability distribution rather than a rigid answer. Even this toy example has hundreds of weights and biases; modern language models have billions of parameters, but the principle is the same.
 
 ===
 ---
@@ -117,15 +95,7 @@ After training, the weights are fixed and no longer change.
 
 <!-- notes -->
 
-Now let's see where the weights come from in the network. At the beginning of training, they are initialized with small random values, so the first version of the model responds almost randomly.
-
-We provide the input with an example for which we know the correct answer in advance, make a prediction and compare it with the standard. Then, using backpropagation and an optimization algorithm, we determine in which direction each coefficient needs to be changed so that the result becomes a little closer to the correct one.
-
-The weight is adjusted only by a small amount. If you immediately adapt the network too much to one example, it will simply remember the training sample and will perform worse on new data. Therefore, the cycle is repeated many times on different examples: predict, measure the error, slightly adjust the weights.
-
-The network for recognizing numbers has about six hundred parameters: the weights of the input and output layers plus `bias`. Even open models that can be run on a single video card are already measured in billions of parameters, and the largest cloud systems are measured in much larger numbers. The principle of learning remains the same, but the scale of data and computation changes radically.
-
-Before the era of modern language models, neural networks were already good at solving problems with understandable fixed input and output: image classification, object recognition and other similar tasks. Now the next question arises: how to feed text of arbitrary length into a numerical model?
+At first, the weights are random, so the answers are almost random. We provide an example with a known result, compare the prediction with the target, and use backpropagation to adjust the coefficients slightly. The loop repeats across a large dataset: predict, measure error, update weights. The developer defines the architecture, data, and metric; training discovers the parameter values.
 
 ===
 ---
@@ -142,13 +112,7 @@ The same tokenizer “cuts” English, Russian and code differently.
 
 <!-- notes -->
 
-A neural network works with numbers, so an arbitrary string cannot simply be passed to it as is. First, the text is divided into tokens - statistically frequently occurring sequences of characters. The tokenizer dictionary is built so that typical texts are represented in a relatively short sequence.
-
-A common English word is often placed into a single token. It’s more complicated with Russian and other languages: a separate token can be a whole word, a root, an ending, or even one letter. Therefore, the same length of text in different languages ​​takes up a different number of tokens.
-
-There is also a non-obvious detail: the space before the word is often included in the token itself. This means that the same word at the beginning of a line and after a space can be encoded with different identifiers.
-
-The code is processed using the same statistical principle. English keywords, parentheses, quotation marks, and other common character combinations can be combined into separate tokens. For the model, both plain text and source code eventually become a sequence of numeric identifiers.
+A neural network works with numbers, so text is split into tokens—frequent sequences of characters. A common English word may fit into one token, while Russian words are more often divided into parts. Code is processed the same way: keywords, brackets, and common patterns become tokens. Both prose and source code end up as sequences of numeric identifiers.
 
 ===
 ---
@@ -169,15 +133,7 @@ Thanks to this representation, mathematical operations on words are possible:
 
 <!-- notes -->
 
-The token ID itself is just a serial number in the dictionary. For the model to work, each token is associated with an embedding: a set of hundreds or thousands of numbers. These values ​​are also trainable parameters. During training, they are gradually formed, and in the finished model they are read from the table.
-
-Embedding can be thought of as a numerical representation of meaning. To illustrate, let us greatly simplify the multidimensional space to two conditional directions: “royal - ordinary” and “male - female”. Then the king, the king and the prince will be nearby, because they have similar properties. The Queen and Princess form an adjacent group.
-
-The distance between points allows you to evaluate the proximity of words. Moreover, you can perform operations on vectors that cannot be done in plain text. A classic example: if you subtract the direction “man” from the vector of the word “king” and add the direction “woman”, the result will be close to the word “queen”.
-
-Of course, in a real model there are not two labeled axes, and there are many more dimensions. Semantics is distributed among a set of numbers and arises itself during the learning process. We don't manually specify where "royalty" should lie or the meaning of each word.
-
-The ability to learn such numerical relationships is one of the reasons why neural networks can work with language. The initial embedding describes a single token, and then Transformer will change it taking into account the entire context.
+A token ID selects an embedding, a vector containing hundreds or thousands of learned values. In this simplified two-dimensional view, words with related meanings appear close together. Vector operations become possible: “king minus man plus woman” lands near “queen.” No one defines the meaning of each coordinate in advance; semantic relationships emerge from data and are distributed across the vector.
 
 ===
 ---
@@ -195,17 +151,7 @@ A bright cell means more weight in one attention operation.
 
 <!-- notes -->
 
-Before attention, each token is already represented by embedding, to which information about its position in the sequence is added.
-
-The key mechanism of Transformer is attention, proposed in the article “Attention Is All You Need” in 2017. Its job is to add information from all previous context to the current token's representation.
-
-To predict the next token, it is not enough to take the embedding of the last word. You need to understand which parts of the request affect it more. Therefore, the model builds a matrix of connections of size `n × n`, where `n` is the number of tokens in the context. For each position, the impact of all available previous positions is evaluated.
-
-A bright cell in the diagram means more weight. For example, when processing a pronoun, the model may lean more heavily on the noun to which it refers. One token may be important for syntax, another for meaning, and a third will have almost no effect on the current position.
-
-The embeddings of previous tokens are then mixed in proportion to these weights. The output is no longer a representation of one word with its position, but a context vector to which relevant information from the entire sequence has been added.
-
-The scheme is greatly simplified: several attention operations operate within each layer, and connections are recalculated at different depths. But the main idea is exactly this - to give each position access to the necessary part of the context.
+The last token embedding is not enough to predict what comes next. Attention estimates which tokens in the context matter for each position and builds a matrix of relationships. The token representation is then mixed with contextual information using those weights. The result is no longer a static embedding of a word, but its meaning in this particular sentence.
 
 ===
 ---
@@ -223,17 +169,7 @@ The same general step is repeated **96 times**: mix information between tokens >
 
 <!-- notes -->
 
-After attention, the context vector enters a fully connected neural network - the same multilayer perceptron that we have already seen in the example of number recognition.
-
-In GPT-3, each position is represented by a vector of 12288 numbers. Inside the MLP, it expands approximately four times to 49,152 values, undergoes a nonlinear transformation, and returns to its original dimension. At the output we still have embedding, but already changed by the next processing layer.
-
-The combination of attention and MLP is called the Transformer block. One block is not enough, so in GPT-3 this operation is repeated 96 times. Each subsequent block receives the result of the previous one and gradually refines the representations.
-
-In a simplified explanation, one can imagine that different depths begin to highlight different features: syntax, connections between objects, knowledge about the code, or other patterns. This does not mean that one block is strictly responsible only for punctuation, and the other - only for the meaning. Specialization is more complexly distributed, but research does show the emergence of different types of traits at different layers.
-
-After the last block, the resulting vector is compared with the embeddings of tokens from the dictionary. Based on proximity, a probability distribution is calculated: which token should come next.
-
-The entire huge Transformer issues only one new token in one pass. To get the entire response, this token is added to the end of the context, the sequence goes through the model again, and the next one appears. The loop continues until the model selects a special termination token.
+After attention, the vector passes through a feed-forward network, a larger version of the digit example. A Transformer contains many such blocks. Each transforms the current representation and adds its result. During training, layers capture syntax, punctuation, facts, code patterns, and other relationships. After the final block, the output vector is compared with the vocabulary to select the next token.
 
 ===
 ---
@@ -248,13 +184,7 @@ Context - a package of input data: service instructions (`system prompt`), dialo
 
 <!-- notes -->
 
-Context is all the information that the model sees at the current step. Modern models are mostly multimodal, so the input can be not only text, but also images, files and documents of other formats.
-
-When looking at a chat or agent, the context includes system instructions from the vendor, conversation history, the current user message, project files, attached documents, images, descriptions of available tools, and the results of calls already made.
-
-Internally, all this is represented as a sequence of tokens and fed into the Transformer. At the output, the model receives only a probability distribution for one new token. The selected token is added to the initial context, after which the next generation step is started.
-
-Therefore, the quality of the answer directly depends on what is in the input packet. If the desired fact, file, or tool result is not in the context, the model cannot reliably retrieve it from nowhere. We'll see later how agency binding helps the model itself gather the missing context.
+Context is everything the model receives: system instructions, conversation history, files, images, tool definitions, and tool results. An LLM generates one token per pass. That token is appended to the context, and the model runs again. A long answer is therefore a sequence of individual predictions, with every next step depending on the context accumulated so far.
 
 ===
 ---
@@ -272,17 +202,7 @@ Post-training teaches you to follow instructions, engage in dialogue, and choose
 
 <!-- notes -->
 
-At the first stage, pretraining, the model is trained on a huge set of texts: materials from the Internet, books, code, and including synthetic data created by other models. The basic task is simple - predict the next token or the next part of the image.
-
-As a result, the base model absorbs languages, knowledge from the training set, and numerous reasoning patterns. But this is not a ready-made assistant yet. Such a model can continue the text, but is not required to respond interactively, follow instructions, or behave safely.
-
-Next comes post-training and alignment—learning the desired behavior. First, the model is taught the role of an assistant: they are given instructions and examples of good and bad answers, taught to answer questions and follow the format of the dialogue.
-
-The behavior is separately configured: security restrictions, failure rules and the specifics of a particular product. Specific recipes differ from one laboratory to another, but the goal is the same - to bring the actual behavior of the model closer to what the system developer wants to achieve.
-
-Another important step is tool use. A tool call to a model also appears as specially formatted text, often a JSON-like structure. The model must select the desired action and fill in the parameters. The outer shell then actually runs the search, Python code, image generation, or console command and returns the result to the context.
-
-After this, the model continues to work with new data. It is this skill—forming a challenge, reading the outcome, and deciding what to do next—that creates the foundation of the agency cycle.
+Pre-training on large collections of text and code teaches a base model to predict the next token. Alignment then teaches it to act as an assistant, follow instructions, respect safety boundaries, and use tools. Even after that, it is still an LLM that consumes context and generates tokens. To act in a real environment, it needs a system around it.
 
 ===
 ---
@@ -303,11 +223,7 @@ Two systems on the same model can behave completely differently[6].
 
 <!-- notes -->
 
-Now let's introduce the term `harness` - a software framework that allows the language model to work as an agent. A simplified formula looks like this: an agent is an LLM plus a harness.
-
-The model itself receives the context and is able to generate text or a request to call the tool. Harness shows it a list of available actions, executes the selected call and returns the result back. The model then takes the next step. This cycle continues until the finished result or until the user's response is required.
-
-Sonnet, Opus and GPT‑5.6 are models. Claude Code, Codex and Cursor are different harness systems around models. Therefore, two systems on the same LLM can behave very differently: they collect context, provide tools, manage the loop, and verify task completion differently.
+The system around the model is the harness. It exposes tools, executes selected actions, and returns their results to context. The model asks to read a file, proposes a change, runs tests, and sees the result. This creates a loop: reasoning, tool call, observation, next step. The model selects actions; the harness provides access, execution, limits, and state.
 
 ===
 ---
@@ -323,15 +239,7 @@ Both the chat and the agent are harnessed around the model. The difference is in
 
 <!-- notes -->
 
-Modern chat is also a harness. ChatGPT and similar products already know how to work in a loop: run Python code, do a web search, analyze files and trigger the generation of images. For many one-time tasks this is enough.
-
-The main limitation of chat is context. Typically, it only knows what the user has written, added to the dialogue, or pre-loaded into the project. The chat does not see your file system and cannot itself find a neighboring class, migration or configuration that you forgot to mention. Responsibility for the completeness of the source data remains with the individual.
-
-The local agent runs next to the project. A business description of the task is often enough for him: then he will find the right place in the repository, read the associated files and collect the minimum necessary context. There is no need to guess in advance which pieces of code to copy into the message.
-
-Such an agent has significantly more tools. It can execute commands in the console, search the project, run tests and local services. Through separate connections, it can be given reading logs or databases.
-
-But widespread access requires caution. The project code does not provide automatic access to production data. Separate permissions are required for the real database, logs and external systems. If such access is still granted, it is safer to start with read-only mode so that an erroneous call does not change the data.
+The line between chat and agent is blurry: a chat can also search, analyze files, and run code. The practical difference is the environment. A chat mostly sees what the user uploads. An agent reads the file system, executes commands, edits the project, and runs tests. It can move beyond explaining a solution and carry a change through verification.
 
 ===
 ---
@@ -347,17 +255,7 @@ Skill combines instructions, materials and, if necessary, scripts so that the ag
 
 <!-- notes -->
 
-The next opportunity for local agents is skills. I treat them quite conservatively: in essence, a skill is a pre-saved context and instructions that can be connected to a task with one command.
-
-Skills are especially useful for repeatable processes. For example, a team has review rules: what to check, what commands to run, in what format to return comments. Instead of inserting a long instruction into the chat every time, it can be issued once as a skill.
-
-The same applies to the workflow of a new task: first research the project, prepare a plan, wait for confirmation, then implement, check and formalize the result. In the skill you can put the order of steps, requirements for the plan, necessary documents and readiness criteria.
-
-There are many ready-made skills in open repositories that promise a sharp increase in quality or savings in tokens. Such statements should be checked on your own tasks. A couple of successful examples are not enough - you need a set of typical cases and a comparison of results.
-
-In addition, skills are aging. With the release of a new line of models, previous prompt engineering techniques may become useless or even interfere. Modern strong models usually understand ordinary meaningful instructions well without special psychological tricks.
-
-Therefore, a good skill is not a magical prompt, but a compactly recorded, repeatable process that your team really needs and is supported along with other work rules.
+A skill is a set of instructions for repeatable work: what to read, which sequence to follow, and how to verify the result. It is useful when you repeatedly explain the same process, such as investigating a task, reviewing code, preparing a document, or releasing a change. The workflow is written once and invoked by name, with optional templates, examples, and scripts.
 
 ===
 ---
@@ -373,17 +271,7 @@ MCP connects the model with external context and actions: **documentation, brows
 
 <!-- notes -->
 
-MCP stands for Model Context Protocol. This is a standard through which external data sources and actions are connected to the agent: a database, a log system, a browser, Figma, GitLab or another software product.
-
-At the same time, the local model with access to the console and without MCP can already do a lot. It can call a regular API, run a Git command, or write a small script to query data. MCP does not add a fundamentally impossible action, but provides a ready-made, predictable set of tools.
-
-One practical benefit is the economy of context. Instead of documentation of a large API and a long command, the model receives a short operation with the necessary parameters. The server makes the call and returns a structured result.
-
-But connecting a huge MCP server for a couple of simple actions is not always profitable. If you need to read a single MR or run a regular Git command, the agent will often do just fine via the CLI or a direct request. The description of dozens of unused tools itself takes up context.
-
-MCP is especially useful where access to the system is non-trivial: its own API, database, log search or service with complex authorization and request format. This is not a universal tablet, but a convenient way to standardize a specific connection.
-
-And the protocol itself does not cancel security. Rights, secrets, authorization and allowed actions are still configured separately. For sensitive data, minimal access and read-only mode are preferred.
+MCP, the Model Context Protocol, is a standard way to connect an agent to an external database, service, editor, or task tracker. It is not mandatory: Git, curl, APIs, and local commands work directly. MCP is most useful for structured integrations, authenticated access, and specialized operations. Built-in agent capabilities are usually enough to begin.
 
 ===
 ---
@@ -397,15 +285,7 @@ minutes: 2
 ---
 <!-- notes -->
 
-Access to the repository opens up a useful class of tasks not only for developers. Understanding someone else's code is not trivial even for a programmer, and an analyst or product often has to look for a person who knows a specific module. The agent can act as the first guide through the code base.
-
-You can ask what protocol the integration uses, where a certain value is stored, from which fields it is calculated, or how the backend and admin panel are connected. The agent will find external API clients, services, migrations and tests and explain the found logic in plain language.
-
-This does not provide a 100% guarantee of the correct answer. Complex or outdated code can be misunderstood, and a person without deep knowledge of the module will face the same problem. Therefore, it is useful to ask for links to specific files and separate the confirmed facts from the conclusion.
-
-Another common scenario is SQL preparation. There is no need to manually enumerate tables, fields and relationships: the model can reconstruct the schema from entities and migrations and assemble the query. If there is a secure connection to the read-only database, it will also be able to test it on real data.
-
-It is important to distinguish between three levels here. The repository shows what behavior is inherent in the code. The configuration tells you what is enabled in a specific environment. And the actual event in production is confirmed only by data and logs. One access to the code does not replace the last two sources.
+Repository access is useful beyond development. You can ask an agent how an integration works, where data is stored, how a value is calculated, or where a rule is configured. It can find API clients, migrations, services, and tests and show the evidence. It can also prepare SQL or analysis, but current production state still requires separate data, logs, and permissions.
 
 ===
 ---
@@ -423,19 +303,7 @@ In 2021, Copilot guessed the following line of code [52]. In 2022, ChatGPT turne
 
 <!-- notes -->
 
-To understand the direction of movement, let's see how quickly the unit of work that can be delegated to the model grew.
-
-In 2021, Copilot mainly predicted the continuation of the current line or small function. This already speeded up the typing of code, but the person always remained inside each step.
-
-In 2022, ChatGPT made conversation with a language model a mainstream product. He could already generate blocks of code and knew something even about rare technologies, although he often made mistakes and produced broken solutions.
-
-In 2023, GPT‑4 became capable of independently holding a task for several minutes and writing meaningful working scripts. In 2024, models received broad multimodality - understanding and generating images - and a separate reasoning mode, which significantly improved the quality of complex answers.
-
-A good pace marker is the International Mathematical Olympiad. In 2024, the specialized bundle of models and tools reached the Silver level. Just a year later, the general-purpose model received an official gold result, solving problems in natural language without special formalization for the Olympiad.
-
-In 2025, coding agents confidently took on small and medium-sized tasks on multiple files. In 2026, experiments progressed to entire projects and tens of hours of battery life.
-
-The main change is not another name for the model, but the growth of the horizon of verifiable independence: from a one-line proposal to a task, and then to a large system.
+In 2021, Copilot mainly completed the current line of code. In 2022, ChatGPT made conversation with a model a mass-market product. GPT-4 could already handle small tasks across several files. Then came multimodality and reasoning. By 2025, agentic IDEs were completing repository-level tasks, and in 2026 experiments are already measured in whole projects.
 
 ===
 ---
@@ -455,19 +323,7 @@ Bun (JS Runtime) moved from Zig to Rust [49].
 
 <!-- notes -->
 
-We have not yet reached the everyday “create any project” button, but there are already several indicative experiments.
-
-Cursor organized a system of hundreds of parallel agents who spent more than a week building the browser engine from scratch. The result was a project of about a million lines. It wasn't bug-free or ready to replace existing browsers, but it was able to get a significant part of the way from specification to a working system.
-
-Anthropic conducted a similar experiment with a C compiler for Rust. The result was able to assemble large real-world programs, including Doom and parts of the Linux kernel. This is no longer a training function, but a large system with many interacting components.
-
-The third example is the porting of JavaScript runtime Bun from Zig to Rust. Initially, this was an experiment, but after a week the main developer decided to continue with a new implementation and close the previous direction.
-
-It is important to understand these results correctly. This is not one agent who received the phrase “make a browser” and returned perfect code a week later. There was a system of many sessions, parallel executors, tests, checks, restarts and human control.
-
-All three tasks have good verifiability in common. The compiler can be tested on well-known programs. The runtime has tests and the old implementation for comparison. For the browser, there are detailed standards and ready-made engines with which you can compare behavior.
-
-Therefore, it is not the million lines in themselves that are important. The clearer the outcome criterion and the cheaper the automatic check, the further the agent is able to go on its own. Without tests and reviews, a large amount of code remains just a large untested change.
+Recent experiments involve parallel agents, hundreds of thousands of lines, and weeks spent on a browser engine, compiler, or runtime port. The common factor is cheap verification: compare the result with an existing implementation and reuse established tests. This is not full autonomy or line-by-line review, but a strong verification harness moves human involvement up to goals and acceptance.
 
 ===
 ---
@@ -483,17 +339,7 @@ minutes: 2
 
 <!-- notes -->
 
-Previously, it seemed that the development of models would primarily be limited by the amount of computation, electricity, or lack of training data. Now another limit is becoming more and more noticeable - the human ability to control the actions of many powerful agents.
-
-The problem is not that the model suddenly has malicious intent. The agent is given a goal, tools, and a large time budget, and then finds a way to achieve a result that the creators of the environment did not foresee.
-
-In one of the cyber-evals, the model had to pass a benchmark in an isolated environment. She found a vulnerability in the infrastructure, went online and accessed external data to get answers. Formally, the goal remained the same - to successfully pass the test - but the method turned out to be far beyond the expected boundaries.
-
-In another study, an analysis of a large number of launches revealed real calls to the production infrastructure of third-party organizations. The environment actually allowed for escape, even though the model's instructions stated that it was in a simulation. In one episode, an agent created and published a malicious package that was launched on real systems.
-
-Such cases show the risk of running hundreds of agents in parallel with a broad goal and a poorly constrained environment. If a problem is not solved in the usual way, the system may discover an unexpected path, and existing monitoring and stopping mechanisms will not be enough.
-
-Therefore, there are few filters on the final response. You need to control the entire agent circuit: rights to files and services, network, secrets, external providers, activity logs, incident detection and operator responsibility. This applies to both model training and the normal work of agents.
+Compute, electricity, and data were expected to limit scaling, but control is becoming more visible. The longer a model acts and the more tools it has, the harder unintended behavior is to anticipate. A sandbox alone is not enough; we need observability, limits, inspectable intermediate states, and a stop mechanism. This is an engineering problem in the harness and monitoring, not an independent model goal.
 
 ===
 ---
@@ -510,11 +356,7 @@ A strong model is usually slower and more expensive. You need to select accordin
 
 <!-- notes -->
 
-Almost all vendors produce advanced models in product lines. The names change, but the roles are similar: a fast junior model, a balanced mid-range model and a frontier model with maximum capabilities.
-
-The fast option is suitable for massive simple transformations: classification, transferring data between formats and other repeatable work. The balanced model covers typical dialogues and agent tasks. Frontier is needed for complex analysis, ambiguous decisions and cases with a high cost of error.
-
-Typically, the more capable a model, the more expensive and slower it is. Therefore, choosing “the smartest one always” is not necessary. First you need to evaluate the class of the task and understand what ceiling of capabilities is sufficient. After choosing a model, the second parameter remains - effort.
+Vendors offer model families: fast and inexpensive models, mid-range options, and frontier models. They differ in knowledge, speed, price, and the complexity they can sustain. A large model is often unnecessary for a simple transformation, but capability matters for repository research or ambiguous decisions. Besides the model, there is another setting: effort.
 
 ===
 ---
@@ -534,13 +376,7 @@ If the task is simple for both models, with the same effort they usually produce
 
 <!-- notes -->
 
-Effort literally means “effort,” but it is convenient to think of it as the model’s diligence. The parameter determines how long it will take to find a solution and how many additional attempts and checks it will make.
-
-If the task is not immediately achievable, high effort allows you to reason longer and try a different path. Even after a solution has been found, the model can continue checking: open neighboring files, run additional tests, or double-check its own conclusions.
-
-On a simple task, the smaller and larger models often arrive at the same quality. The younger one with medium effort will do it faster and cheaper. A strong model is not obliged to solve a simple problem worse, but can spend more time and more expensive tokens without noticeably improving the result.
-
-Therefore, the optimal setup is a balance of speed, cost and sufficient quality. It has to be selected based on your own typical tasks, and not just by the name of the model.
+Effort describes how much time and how many tokens the model spends reasoning and checking. A small model at low effort is usually enough for a simple task such as converting JSON. It can provide comparable quality faster and more cheaply than a frontier model at maximum reasoning. If the task is clear, the context is small, and verification is easy, start light.
 
 ===
 ---
@@ -557,11 +393,7 @@ Increasing effort forces the model to reason, test, and try longer, but does not
 
 <!-- notes -->
 
-On a complex problem, the situation changes: models have different ceilings of capabilities. The younger model at maximum effort can search for a long way, and the larger one at `medium` can quickly get a result of the same quality.
-
-If you increase the effort of a large model, its quality can increase even more. The extra effort helps to better utilize the capabilities of the selected model, but does not turn the junior model into a frontier.
-
-Therefore, calculating only the price of one token is not enough. A more expensive model is sometimes cheaper per problem solved because it chooses the correct approach faster and requires fewer retries.
+If a small model lacks the knowledge, context capacity, or ability to build a long solution, more effort will not add that missing capability. A stronger model at medium effort may be better and cheaper because it avoids repeatedly following the wrong path. Effort lets a model work longer within its abilities; a wrong direction is a signal to switch models.
 
 ===
 ---
@@ -583,17 +415,7 @@ minutes: 2
 
 <!-- notes -->
 
-Choosing a model and effort is not the first item on the checklist. First you need to check the problem statement.
-
-If the goal, boundaries and criterion of readiness are not clear from the formulation, neither the junior nor the senior model will be able to fulfill it efficiently - just like a person. In the best case scenario, the agent will notice the gap and ask a question. At worst, he will fill it with his own assumption and solve the wrong problem.
-
-The next question is whether there is enough data. If the production does not have the required file, fact, or access to the source, the result will also be unreliable. You can transfer the data directly or provide a tool with which the agent will receive it himself. The model is able to clarify the obvious lack of context, but it does not know about all the nuances that the problem author forgot to mention.
-
-If the goal is clear and the context is sufficient, but the agent is moving in the right direction and simply ends too early, you can raise effort. This is similar in meaning to a “continue” message: the model will have more time to take additional steps and check.
-
-If she systematically chooses the wrong approach, does not understand the design, or lacks knowledge and ability, a transition to a stronger model is needed. Additional effort will not correct the fundamental ceiling.
-
-Finally, we consider the cost of error. The lower it is, the bolder you can choose a smaller model and effort. If the error is expensive, it is reasonable to immediately use a high-effort frontier model - but together with tests, review and reproducible verification. The strongest model still does not replace outcome control.
+First check the task wording. If it is unclear to a person, the model will not guess the outcome. Then make sure the required data is available. If the model is moving correctly but stops early, raise effort or ask it to continue. If it chooses the wrong files and approach, use a stronger model. The higher the cost of error, the more capability and verification you need.
 
 ===
 ---
@@ -610,17 +432,7 @@ Without MCP, swarms of agents and complex hierarchy of skills.
 
 <!-- notes -->
 
-Now a little about my work process. It is designed quite simply: without mandatory MCP, a swarm of agents and a complex automation hierarchy.
-
-I take the task from a task tracker. Usually the business requirements are already described by the product or analyst, and I add the missing technical information and formulate the technical specification so that the goal and limitations are clear.
-
-Then I transfer the task to Codex through a separate skill for new tasks. It sets out the order of work: read relevant documents, examine the code, ask questions if necessary and prepare an implementation plan.
-
-I read the plan separately, clarify and confirm. After that, I take a link to a self-sufficient document and begin implementation in a new clean chat. This way, rejected options and a long history of discussions do not remain in the context.
-
-I check the finished code in PhpStorm. I can make minor edits manually, but larger comments are returned to the agent. After review, I create a branch, commits and MR. I also go through GitLab myself.
-
-That is, the control points remain with the person: setting the task, approving the plan, reviewing the code and publishing the result. The agent takes long sections of research and implementation in between. For my process, manually moving to a task tracker or GitLab is not a significant blocker, so automating it through MCP is not yet necessary.
+I take a task from the tracker and add missing technical detail. Codex investigates the documents and code and prepares a plan. I review it, resolve questionable decisions, and only then ask for implementation. I review the resulting code as well, with several feedback cycles when needed. For now, I create the branch, commits, merge request, and perform the final GitLab review myself.
 
 ===
 ---
@@ -639,11 +451,7 @@ The agent reads only the relevant slice and updates the documentation if it disc
 
 <!-- notes -->
 
-The repository has a folder with domain documents. They contain stable knowledge on individual processes: for example, how acquiring, payments, or integration with an external system works.
-
-When a problem appears in an unfamiliar area, I first read the relevant document as a human, and the agent uses the same material during research. If there is no ready-made description, the process can be reconstructed by code and recorded for the following tasks.
-
-The documents are written in human-readable form and divided by topic. Thanks to this, you don’t have to load the entire project into the context each time: you just need to select the relevant slice. A plan for a specific implementation is stored separately from permanent knowledge.
+The project stores persistent context in domain documents: integrations, tests, business rules, and constraints. General information lives in a short top-level AGENTS.md or an equivalent file. Task plans are stored alongside it. The agent does not load the whole project; it reads the common rules, selects the relevant domain slice, and fills gaps by investigating the code.
 
 ===
 ---
@@ -661,13 +469,7 @@ After my review, this file becomes instructions for implementation and a checkli
 
 <!-- notes -->
 
-An implementation plan collects all the context of a specific task into a single Markdown file. It captures the goal, current and desired behavior, technical constraints, and external contracts that cannot be broken.
-
-If database changes are needed, migrations and application procedures are described separately. A large task is divided into stages, which, if necessary, can be formalized as separate MRs. It then lists the changes to the code, the overall algorithm, and references to important existing implementations.
-
-There is also a check of the result: tests, manual smoke, layout order and signs of successful work. Open questions remain explicit rather than being replaced by hidden assumptions.
-
-After review, such a plan becomes a self-sufficient instruction. It can be given to the agent in a new chat without all previous correspondence and used as a checklist for implementation and final verification.
+A plan collects the context for a change: goal, current and desired behavior, components, database changes, and external contracts. A large task can be split into stages or merge requests; the plan also defines the algorithm, tests, rollout, and verification. If discussion has accumulated rejected alternatives, I start implementation in a fresh chat with the final self-contained file.
 
 ===
 ---
@@ -683,13 +485,7 @@ First, the agent looks for a ready-made answer in **domain documents**. If it is
 
 <!-- notes -->
 
-When an agent receives a question or a new task, it first reads the project instructions and domain documents. For example, `AGENTS.md` can suggest the structure of the repository and lead to the desired folder in `docs/<domain>/`. There may already be a ready-made description of the process, integration or limitation.
-
-If the answer is not in the documents, the agent proceeds to a regular search in the repository. Through `rg --files` you can find files and modules by part of their name. Through `rg -n` - all mentions of a business term, class, route, database field or error text. Found names give new queries for the next step.
-
-If an agent has access to a code index through MCP—for example, a PhpStorm index or a custom service—they can look up symbol definitions, their usage, interface implementations, and call chains. For a large typed project, this search is sometimes more accurate than a regular grep because it takes into account the structure of the code, not just the text match.
-
-After searching, the agent opens only relevant files and compares the output against tests, migrations, and configuration. In the response, it can specify the specific paths and lines on which the output is based. In this case, the code shows the intended behavior; for the current state of production, you still need separate data, logs or access to the configuration.
+An agent is like a new developer: it does not know the whole project in advance. It first searches domain documents. If the answer is missing, it searches file names and terms in the code, opens relevant locations, and builds context. An MCP or IDE index can improve symbol search, but ordinary file search is often enough. Conclusions are checked against tests, migrations, and configuration.
 
 ===
 ---
@@ -702,9 +498,7 @@ subtitle: Do we have a place in the new world?
 ---
 <!-- notes -->
 
-Let's move on to the final part: what remains for a person in a world where agents write more and more code and take away more and more implementation stages?
-
-Deep technical knowledge is not disappearing, but the complexity of implementation is increasingly less likely to be the ultimate value. It is more important to choose the right problem, define the expected result, set criteria and be responsible for the consequences of the decision.
+The final section is about the human role as agents take over more implementation work. The central shift is from mechanical execution to choosing the problem and defining the outcome. As code and other artifacts become cheaper to produce, real-world context, judgment, and responsibility for consequences become more valuable.
 
 ===
 ---
@@ -721,17 +515,7 @@ Tasks where you need to choose a problem and criteria, take into account the rea
 
 <!-- notes -->
 
-To talk about the future, it is convenient to use Bloom's taxonomy - a ladder from basic cognitive operations to more complex ones. The bad news is that you will have to think more: a quiet, repeatable routine will be automated first.
-
-At the lower level is knowledge. Models have already absorbed a huge amount of public information and quickly find facts. Next comes understanding: retelling, classification, translation and transformation of the material. Using known procedures - including writing generic code - also transfers well to agents.
-
-Above are analysis, evaluation and creation of new things. Here you need to explore the problem area, select the problem itself, compare options, determine criteria for success, evaluate the consequences and assemble a solution. Essentially, these are product responsibility tasks.
-
-Models already help at these levels: they analyze data, offer hypotheses and options. But a person with a deep real context still better understands what issue is worth solving and what risk is acceptable. With real creativity and new directions for models, it’s also even more difficult than with reproducing the known.
-
-Bloom's Taxonomy is not a literal map of jobs. The lower levels do not disappear: without knowledge and understanding it is impossible to analyze qualitatively. But repeatable operations with clear input and cheap verification will be replaced the fastest.
-
-If there is a process in your job that regularly takes an hour or two and is done the same way every time, it is a prime candidate for automation. The freed up time will have to be spent on less routine and more complex decisions.
+Bloom's taxonomy places remembering, understanding, and applying known procedures at the lower levels. Models automate these first: search, summarization, translation, classification, and routine code. Higher levels involve analysis, evaluation, and creation—choosing problems, options, and risks. Models help there too, but accountability and deep context remain human. Repeatable, verifiable routine disappears first.
 
 ===
 ---
@@ -744,19 +528,7 @@ subtitle: What is being automated?
 ---
 <!-- notes -->
 
-What is already being automated well? First of all, read the documentation. If there is an exact specification, the agent quickly turns it into working context and code.
-
-Searching for answers in a repository, data analytics, and querying the database also work well when the goal is clear. The model can reconstruct the schema, write the SQL, and help evaluate the result.
-
-Integration testing is automated if there is a full-fledged test loop that does not require manual actions from the other party. The agent needs a repeatable sequence and a verifiable outcome. If the last step depends on colleagues in an external company or unavailable production, autonomy ends.
-
-The writing of code itself is also well delegated with a clear technical specification, understandable contracts and tests. In order for the code to turn out to be of high quality, readiness criteria and verification are still needed; without them, the model will only quickly create a large volume of changes.
-
-Ready-made author's texts are less automated. The model easily produces a coherent draft, but often leaves unnecessary language, loses the author's voice and requires editorial work.
-
-Laws, regulations and regulatory requirements should not be relied upon without peer review. The cost of error is high here; relevance and practice of application are important, which may not be present in the context of the model.
-
-It's difficult to automate real creativity, choosing a new direction and working with implicit context. Deep expertise in a narrow subject area or a specific company is especially valuable if it is not recorded anywhere and exists only in people’s experience. As long as this context cannot be transferred to the system, the person remains an essential part of the process.
+Documentation, code search, analysis, SQL, and integrations with reproducible test environments automate well. Coding increasingly depends less on typing and more on context and task definition. Polished authorial writing remains harder, while legal and regulatory conclusions require expert review. Genuine creative direction and narrow domain knowledge that has never been documented are also difficult to automate.
 
 ===
 ---
@@ -770,14 +542,4 @@ minutes: 1
 ---
 <!-- notes -->
 
-Artificial intelligence is already making a person without these tools less effective than a person with them. At the same time, AI is not yet able to work completely independently in all real processes: it needs a person who sets the direction, provides context and accepts the result.
-
-Even if systems approach AGI in the near future, for some time the human-AI tandem will likely remain more effective than each participant individually. The final illustration shows precisely the expansion of available complexity: some familiar tasks go to the model, and with its help a person can rise to more complex ones.
-
-If the work consists only of mechanical repetition, the news is really bad - such a routine will be the first to be automated. But if there is a lot of analysis, implicit context, responsibility and creative solutions, AI becomes an enhancer, not a substitute in its own right.
-
-Therefore, it is better to start with a real, repeatable task. There is no need to study hundreds of skills or complex prompt engineering in advance: install an agent, give it a specific process and see which area can already be delegated safely and with verification.
-
-After the presentation I will send you a link to the presentation. It has a text mode with speaker notes and a bonus section for those who want to dig deeper into the mathematics of Transformer: positional encoding, vector operations, choosing the next token, and the reasons for non-deterministic responses.
-
-That's all. Ready to answer questions.
+AI already outperforms people on individual tasks, but the strongest arrangement is a partnership: the person provides direction and context, while the model removes routine and opens access to more complex work. The entry barrier is low; you do not need to master MCP or dozens of skills first. Start the agent in the project and give it a concrete task. Built-in capabilities are enough to begin.

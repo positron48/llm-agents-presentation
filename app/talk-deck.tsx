@@ -53,6 +53,32 @@ type TalkDeckProps = {
 
 type EditableField = "kicker" | "title" | "subtitle" | "body" | "notes";
 
+const interactiveVisuals = new Set([
+  "neuron",
+  "digit",
+  "tokens",
+  "generation",
+  "capabilities",
+  "chooser",
+  "deep-attention-intro",
+  "deep-probabilities",
+]);
+
+function InteractiveMarker({ withLabel = false }: { withLabel?: boolean }) {
+  return (
+    <span
+      className={`interactive-marker ${withLabel ? "with-label" : ""}`}
+      aria-label="Интерактивный слайд"
+      title="Интерактивный слайд"
+    >
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M5 3.5 18.5 12l-6.1 1.4 3.3 5.7-2.8 1.6-3.2-5.8L5 19.2Z" />
+      </svg>
+      {withLabel && <span>Интерактив</span>}
+    </span>
+  );
+}
+
 function LanguageSwitcher({ language, hrefFor }: { language: "ru" | "en"; hrefFor: (language: "ru" | "en") => string }) {
   return (
     <nav className="language-switcher" aria-label="Language">
@@ -3595,6 +3621,7 @@ function TalkDeckContent({
           </div>
         )}
         <div className="slide-visual"><Visual name={slide.visual} /></div>
+        {interactiveVisuals.has(slide.visual) && <InteractiveMarker withLabel />}
         {!isBonus && currentIndex === slides.length - 1 && bonusSlides.length > 0 && (
           <button className="bonus-route-cta" type="button" onClick={() => goTo(0, "bonus")}>
             <span>Бонус: как Transformer создаёт следующий токен</span>
@@ -3650,6 +3677,7 @@ function TalkDeckContent({
                     onClick={() => goTo(index, "core")}
                     key={candidate.id}
                   >
+                    {interactiveVisuals.has(candidate.visual) && <InteractiveMarker />}
                     <span>{String(index + 1).padStart(2, "0")} · {candidate.section}</span>
                     <strong>{candidate.title}</strong>
                   </button>
@@ -3670,6 +3698,7 @@ function TalkDeckContent({
                       onClick={() => goTo(index, "bonus")}
                       key={candidate.id}
                     >
+                      {interactiveVisuals.has(candidate.visual) && <InteractiveMarker />}
                       <span>B{String(index + 1).padStart(2, "0")} · {candidate.section}</span>
                       <strong>{candidate.title}</strong>
                     </button>
