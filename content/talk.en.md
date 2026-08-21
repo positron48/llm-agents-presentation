@@ -612,7 +612,7 @@ Without MCP, swarms of agents and complex hierarchy of skills.
 
 Now a little about my work process. It is designed quite simply: without mandatory MCP, a swarm of agents and a complex automation hierarchy.
 
-I take the problem from Planka. Usually the business requirements are already described by the product or analyst, and I add the missing technical information and formulate the technical specification so that the goal and limitations are clear.
+I take the task from a task tracker. Usually the business requirements are already described by the product or analyst, and I add the missing technical information and formulate the technical specification so that the goal and limitations are clear.
 
 Then I transfer the task to Codex through a separate skill for new tasks. It sets out the order of work: read relevant documents, examine the code, ask questions if necessary and prepare an implementation plan.
 
@@ -620,7 +620,7 @@ I read the plan separately, clarify and confirm. After that, I take a link to a 
 
 I check the finished code in PhpStorm. I can make minor edits manually, but larger comments are returned to the agent. After review, I create a branch, commits and MR. I also go through GitLab myself.
 
-That is, the control points remain with the person: setting the task, approving the plan, reviewing the code and publishing the result. The agent takes long sections of research and implementation in between. For my process, manually moving to Planka or GitLab is not a significant blocker, so automating it through MCP is not yet necessary.
+That is, the control points remain with the person: setting the task, approving the plan, reviewing the code and publishing the result. The agent takes long sections of research and implementation in between. For my process, manually moving to a task tracker or GitLab is not a significant blocker, so automating it through MCP is not yet necessary.
 
 ===
 ---

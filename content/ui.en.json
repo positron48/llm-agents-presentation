@@ -1,4 +1,6 @@
 {
+  "Таск трекер": "Task tracker",
+  "Выбираю задачу": "Choose a task",
   ". Нажмите, чтобы изменить": ". Click to change",
   "Сеть XOR: два входа, два нейрона скрытого слоя и один выходной нейрон": "XOR network: two inputs, two hidden layer neurons and one output neuron",
   "выход": "output",

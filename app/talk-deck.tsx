@@ -3362,14 +3362,23 @@ function TalkDeckContent({
     const onKeyDown = (event: KeyboardEvent) => {
       const target = event.target as HTMLElement | null;
       if (
-        target?.matches("input, select, textarea, button") ||
+        target?.matches("input, select, textarea") ||
         target?.closest('[contenteditable="true"]')
       ) return;
-      if (event.key === "ArrowRight" || event.key === "PageDown" || event.key === " ") {
+      if (
+        event.key === "ArrowRight" ||
+        event.key === "ArrowDown" ||
+        event.key === "PageDown" ||
+        (event.key === " " && !target?.matches("button"))
+      ) {
         event.preventDefault();
         goTo(currentIndex + 1);
       }
-      if (event.key === "ArrowLeft" || event.key === "PageUp") {
+      if (
+        event.key === "ArrowLeft" ||
+        event.key === "ArrowUp" ||
+        event.key === "PageUp"
+      ) {
         event.preventDefault();
         goTo(currentIndex - 1);
       }
