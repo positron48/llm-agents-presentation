@@ -53,6 +53,9 @@ type TalkDeckProps = {
 
 type EditableField = "kicker" | "title" | "subtitle" | "body" | "notes";
 
+const publicAsset = (path: string) =>
+  `${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}${path}`;
+
 const interactiveVisuals = new Set([
   "neuron",
   "digit",
@@ -173,7 +176,7 @@ function HeroVisual() {
       {/* eslint-disable-next-line @next/next/no-img-element -- Vinext's local image optimizer returns 500; the static asset is served directly. */}
       <img
         className="hero-image-ru"
-        src={visuals.hero.image}
+        src={publicAsset(visuals.hero.image)}
         alt={visuals.hero.alt}
         width="1536"
         height="1024"
@@ -183,7 +186,7 @@ function HeroVisual() {
       {/* eslint-disable-next-line @next/next/no-img-element -- language-specific static cover; see the Russian asset above. */}
       <img
         className="hero-image-en"
-        src="/og.en.png"
+        src={publicAsset("/og.en.png")}
         alt="An artificial neuron develops into a neural network, and then into an agent with tools"
         width="1536"
         height="1024"
@@ -200,7 +203,7 @@ function BiologicalNeuronVisual() {
       <figure>
         {/* eslint-disable-next-line @next/next/no-img-element -- local CC BY scientific asset; Vinext's image optimizer returns 500. */}
         <img
-          src={visuals.biologicalNeuron.image}
+          src={publicAsset(visuals.biologicalNeuron.image)}
           alt={visuals.biologicalNeuron.alt}
           width="891"
           height="579"
@@ -2838,7 +2841,7 @@ function ModelProductVisual() {
     <figure className="model-product-visual">
       {/* eslint-disable-next-line @next/next/no-img-element -- static presentation asset is served directly. */}
       <img
-        src={visuals.modelProduct.image}
+        src={publicAsset(visuals.modelProduct.image)}
         alt={visuals.modelProduct.alt}
         width="1080"
         height="605"
@@ -2854,7 +2857,7 @@ function HumanAiComplexityVisual() {
       {/* eslint-disable-next-line @next/next/no-img-element -- static presentation asset is served directly. */}
       <img
         className="localized-image-ru"
-        src="/human-ai-complexity.png"
+        src={publicAsset("/human-ai-complexity.png")}
         alt="График роста сложности задач: возможности ИИ растут ступенчато, а человек начинает решать более сложные задачи"
         width="903"
         height="655"
@@ -2863,7 +2866,7 @@ function HumanAiComplexityVisual() {
       {/* eslint-disable-next-line @next/next/no-img-element -- English-localized static presentation asset. */}
       <img
         className="localized-image-en"
-        src="/human-ai-complexity.en.png"
+        src={publicAsset("/human-ai-complexity.en.png")}
         alt="Chart of growing task complexity: AI capabilities rise in steps while humans move on to more complex tasks"
         width="903"
         height="655"
@@ -2879,7 +2882,7 @@ function OutcomeOverImplementationVisual() {
       {/* eslint-disable-next-line @next/next/no-img-element -- static presentation asset is served directly. */}
       <img
         className="localized-image-ru"
-        src="/outcome-over-implementation.png"
+        src={publicAsset("/outcome-over-implementation.png")}
         alt="Диалог: разработчик рассказывает о сложной реализации, а заказчик просит просто выполнить его заказ"
         width="842"
         height="538"
@@ -2888,7 +2891,7 @@ function OutcomeOverImplementationVisual() {
       {/* eslint-disable-next-line @next/next/no-img-element -- English-localized static presentation asset. */}
       <img
         className="localized-image-en"
-        src="/outcome-over-implementation.en.png"
+        src={publicAsset("/outcome-over-implementation.en.png")}
         alt="Dialogue: a developer describes a complex implementation while the customer asks for the order"
         width="842"
         height="530"
